@@ -13,10 +13,10 @@ COPY mlflow/logo.svg /usr/local/share/mlflow-logo.svg
 USER jovyan
 
 # install git extension
-RUN pip install jupyterlab-git
+RUN pip install --no-cache-dir jupyterlab-git
 
 # add kfp and install mlflow inside jupyterlab
-RUN mamba install --quiet --yes kfp mlflow jupyter-server-proxy -c conda-forge && \
+RUN mamba install --quiet --yes kfp mlflow=1.20.2 jupyter-server-proxy -c conda-forge && \
     mamba clean --all -f -y 
 COPY jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
