@@ -20,7 +20,7 @@ jobs:
       - name: Set env
         run: |
           TAG_NAME=${GITHUB_REF#refs/*/}
-          IMAGE_NAME=echo $TAG_NAME | sed -e's/\(.*\)-\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\)\+/\1/'
-          VERSION=echo $TAG_NAME | sed -e's/\(.*\)-\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\)\+/\2/'
+          IMAGE_NAME=`echo $TAG_NAME | sed -e's/\(.*\)-\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\)\+/\1/'`
+          VERSION=`echo $TAG_NAME | sed -e's/\(.*\)-\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\)\+/\2/'`
           echo $IMAGE_NAME
           echo $VERSION
