@@ -28,7 +28,7 @@ jobs:
       - name: Build
         run: |
           docker pull gcr.io/getindata-images-public/$IMAGE_NAME:latest || echo "No latest image found"
-          docker build --tag $IMAGE_NAME:latest $IMAGE_NAME
+          docker build --tag $IMAGE_NAME:latest --load $IMAGE_NAME
 
       - name: Publish Image (version)
         uses: mattes/gce-docker-push-action@v1
