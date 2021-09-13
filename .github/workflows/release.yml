@@ -22,5 +22,24 @@ jobs:
           TAG_NAME=${GITHUB_REF#refs/*/}
           IMAGE_NAME=`echo $TAG_NAME | sed -e's/\(.*\)-\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\)\+/\1/'`
           VERSION=`echo $TAG_NAME | sed -e's/\(.*\)-\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\)\+/\2/'`
-          echo $IMAGE_NAME
-          echo $VERSION
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+          echo "IMAGE_VERSION=$IMAGE_VERSION" >> $GITHUB_ENV
+
+      - name: Build
+        run: |
+          docker pull gcr.io/getindata-images-public/$IMAGE_NAME:latest || echo "No latest image found"
+          docker build --tag $IMAGE_NAME:latest .
+
+      - name: Publish Image (version)
+        uses: mattes/gce-docker-push-action@v1
+        with:
+          creds: ${{ secrets.PUBLIC_GCR_DEPLOY_SA_KEY }}
+          src: ${{ env.IMAGE_NAME }}:latest
+          dst: gcr.io/getindata-images-public/${{ env.IMAGE_NAME }}:${{ env.IMAGE_VERSION }}
+
+      - name: Publish Image (latest)
+        uses: mattes/gce-docker-push-action@v1
+        with:
+          creds: ${{ secrets.PUBLIC_GCR_DEPLOY_SA_KEY }}
+          src: ${{ env.IMAGE_NAME }}:latest
+          dst: gcr.io/getindata-images-public/${{ env.IMAGE_NAME }}:latest
