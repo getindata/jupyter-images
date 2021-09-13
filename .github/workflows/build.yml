@@ -20,5 +20,4 @@ jobs:
 
       - name: Build jupyterlab-mlops
         run: |
-          docker pull --load gcr.io/getindata-images-public/jupyterlab-mlops:latest || echo "Latest image does not exist"
-          docker build --tag jupyterlab-mlops:latest jupyterlab-mlops
+          docker build --cache-from gcr.io/getindata-images-public/jupyterlab-mlops:latest --tag jupyterlab-mlops:latest jupyterlab-mlops

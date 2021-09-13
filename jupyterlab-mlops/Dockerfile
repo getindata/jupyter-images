@@ -1,5 +1,8 @@
 FROM jupyter/pyspark-notebook:lab-3.1.9
 
+ARG MLFLOW_VERSION="1.20.2"
+ARG KEDRO_VERSION="0.17.4"
+
 USER root
 
 # allow passwordless sudo and add group required by kubeflow
@@ -16,12 +19,12 @@ USER jovyan
 RUN pip install --no-cache-dir jupyterlab-git
 
 # add kfp and install mlflow inside jupyterlab
-RUN mamba install --quiet --yes kfp mlflow=1.20.2 jupyter-server-proxy -c conda-forge && \
+RUN mamba install --quiet --yes kfp mlflow=$MLFLOW_VERSION jupyter-server-proxy -c conda-forge && \
     mamba clean --all -f -y 
 COPY jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
 # configure python 3.8 env with kedro
-RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipython ipykernel kedro=0.17.4 && \
+RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipython ipykernel kedro=$KEDRO_VERSION && \
     mamba clean --all -f -y && \
     "${CONDA_DIR}/envs/python38/bin/python" -m ipykernel install --user --name=python38 && \
     fix-permissions "${CONDA_DIR}" && \
