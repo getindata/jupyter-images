@@ -9,6 +9,8 @@ try:
     proxy_url_response = requests.get(
             'http://metadata.google.internal/computeMetadata/v1/instance/attributes/proxy-url',
             headers={'Metadata-Flavor': 'Google'})
+    print(proxy_url_response.status_code)
+    print(requests.get('http://metadata.google.internal/computeMetadata/v1/instance/attributes/', headers={'Metadata-Flavor': 'Google'}).text)
     assert proxy_url_response.status_code == 200
     c.ServerApp.allow_origin_pat = 'https://' + proxy_url_response.text
     c.ServerApp.port = 8080
