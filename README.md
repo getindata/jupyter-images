@@ -22,8 +22,8 @@ image with additional setup of:
 
 Compatibility:
 
-[x] [Kubeflow Notebook Servers](https://www.kubeflow.org/docs/components/notebooks/)
-[x] [Vertex AI Notebooks](https://cloud.google.com/vertex-ai/docs/general/notebooks)
+- [x] [Kubeflow Notebook Servers](https://www.kubeflow.org/docs/components/notebooks/)
+- [x] [Vertex AI Notebooks](https://cloud.google.com/vertex-ai/docs/general/notebooks)
 
 #### How to use this image?
 
