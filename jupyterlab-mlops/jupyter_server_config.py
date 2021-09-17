@@ -1,23 +1,36 @@
 import os
 import requests
+import time
 
 c = get_config()  # noqa: F821
 c.ServerApp.ip = "0.0.0.0"
+c.ServerApp.port = 8888
 c.ServerApp.open_browser = False
 
+def get_gooogle_instance_attribute(attribute_name):
+    try:
+        response = requests.get(
+                f'http://metadata.google.internal/computeMetadata/v1/instance/attributes/{attribute_name}',
+                headers={'Metadata-Flavor': 'Google'})
+        if response.status_code == 200:
+            return response.text
+        return None
+    except:
+        return None
+
 try:
-    proxy_url_response = requests.get(
-            'http://metadata.google.internal/computeMetadata/v1/instance/attributes/proxy-url',
-            headers={'Metadata-Flavor': 'Google'})
-    print(proxy_url_response.status_code)
-    print(requests.get('http://metadata.google.internal/computeMetadata/v1/instance/attributes/', headers={'Metadata-Flavor': 'Google'}).text)
-    assert proxy_url_response.status_code == 200
-    c.ServerApp.allow_origin_pat = 'https://' + proxy_url_response.text
+    maybe_vertex_framework = get_gooogle_instance_attribute('framework')
+    assert maybe_vertex_framework == 'Container' # Vertex AI Notebook
+    for _ in range(60):
+        proxy_url = get_gooogle_instance_attribute('proxy-url')
+        if proxy_url is not None:
+            break
+        time.sleep(1)
+    assert proxy_url.endswith('notebooks.googleusercontent.com') # Proxy was set
+    c.ServerApp.allow_origin_pat = 'https://' + proxy_url
     c.ServerApp.port = 8080
 except Exception: # not running on Vertex AI
-    import traceback
-    traceback.print_exc()
-    c.ServerApp.port = 8888
+    pass
 
 # https://github.com/jupyter/notebook/issues/3130
 c.FileContentsManager.delete_to_trash = False
