@@ -1,10 +1,8 @@
 import os
+import requests
 
 c = get_config()  # noqa: F821
-c.ServerApp.ip = "0.0.0.0"
-c.ServerApp.port = 8080
 c.NotebookApp.open_browser = False
-c.NotebookApp.allow_origin_pat = 'https://[0-9a-z-]+.notebooks.googleusercontent.com'
 c.ServerApp.token = ''
 c.ServerApp.password = ''
 c.ServerApp.base_url=os.getenv('NB_PREFIX', '')

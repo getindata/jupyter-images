@@ -21,7 +21,6 @@ RUN pip install --no-cache-dir jupyterlab-git
 # add kfp and install mlflow inside jupyterlab
 RUN mamba install --quiet --yes kfp mlflow=$MLFLOW_VERSION jupyter-server-proxy -c conda-forge && \
     mamba clean --all -f -y 
-COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
 
 # configure python 3.8 env with kedro
 RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipython ipykernel kedro=$KEDRO_VERSION && \
@@ -30,6 +29,8 @@ RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipytho
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
     
+COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
+
 ENV PATH "${CONDA_DIR}/envs/python38/bin:${PATH}"
 ENV CONDA_DEFAULT_ENV python38
 ENV MLFLOW_TRACKING_URI=http://localhost:5000
