@@ -1,8 +1,9 @@
 import os
+import requests
 
 c = get_config()  # noqa: F821
 c.ServerApp.ip = "0.0.0.0"
-c.ServerApp.port = 8080
+c.ServerApp.port = 8888
 c.ServerApp.open_browser = False
 
 try:

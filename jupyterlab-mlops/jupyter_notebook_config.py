@@ -1,5 +1,4 @@
 import os
-import requests
 
 c = get_config()  # noqa: F821
 c.NotebookApp.open_browser = False
