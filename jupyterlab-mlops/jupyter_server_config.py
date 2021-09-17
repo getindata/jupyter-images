@@ -13,6 +13,8 @@ try:
     c.ServerApp.allow_origin_pat = 'https://' + proxy_url_response.text
     c.ServerApp.port = 8080
 except Exception: # not running on Vertex AI
+    import traceback
+    traceback.print_exc()
     c.ServerApp.port = 8888
 
 # https://github.com/jupyter/notebook/issues/3130
