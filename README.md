@@ -17,6 +17,7 @@ image with additional setup of:
 * [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
 * local [MLflow](https://mlflow.org/) server for experiment tracking
 * additional conda environment with python 3.8 and [kedro](https://kedro.readthedocs.io/en/stable/) framework
+* Istio-compatible Spark executor entrypoint
 
 ![jupyterlab-mlops-launcher](docs/jupyterlab-mlops-launcher.png)
 
