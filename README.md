@@ -5,7 +5,7 @@ This repository stores receipes of publicly-available Jupyter images
 Latest versions:
 
 ```
-gcr.io/getindata-images-public/jupyterlab-mlops:0.1.0
+gcr.io/getindata-images-public/jupyterlab-mlops:0.2.0
 ```
 
 ## jupyterlab-mlops
