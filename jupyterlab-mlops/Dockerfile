@@ -1,7 +1,7 @@
 FROM jupyter/pyspark-notebook:lab-3.1.9
 
 ARG MLFLOW_VERSION="1.20.2"
-ARG KEDRO_VERSION="0.17.4"
+ARG KEDRO_VERSION="0.17.5"
 
 USER root
 
