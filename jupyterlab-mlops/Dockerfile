@@ -26,8 +26,8 @@ RUN mamba install --quiet --yes kfp mlflow=$MLFLOW_VERSION jupyter-server-proxy 
 RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipython ipykernel kedro=$KEDRO_VERSION && \
     mamba clean --all -f -y && \
     "${CONDA_DIR}/envs/python38/bin/python" -m ipykernel install --user --name=python38 && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
+    fix-permissions "/home/${NB_USER}" && \
+    fix-permissions "${CONDA_DIR}"
     
 COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
 COPY spark-executor-entrypoint.bash /usr/local/bin/executor
