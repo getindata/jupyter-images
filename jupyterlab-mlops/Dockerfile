@@ -31,6 +31,7 @@ RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipytho
     
 COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
 COPY spark-executor-entrypoint.bash /usr/local/bin/executor
+COPY spark-driver-entrypoint.sh /usr/local/bin/driver
 
 ENV PATH "${PATH}:${CONDA_DIR}/envs/python38/bin"
 ENV CONDA_DEFAULT_ENV python38
