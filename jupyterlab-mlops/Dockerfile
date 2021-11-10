@@ -18,7 +18,7 @@ RUN apt update && \
     pushd /tmp/patches && \
     zip -u /usr/local/spark/jars/spark-core_2.12-3.1.2.jar org/apache/spark/ui/static/* && \
     popd && \
-    rm -rf /tmp/patches
+    rm -rf /tmp/patches /var/lib/apt/lists/*
 
 # allow passwordless sudo and add group required by kubeflow
 RUN echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
@@ -35,7 +35,7 @@ RUN pip install --no-cache-dir jupyterlab-git
 
 # add kfp and install mlflow inside jupyterlab
 RUN mamba install --quiet --yes kfp jupyter-server-proxy -c conda-forge && \
-    pip install mlflow==$MLFLOW_VERSION && \
+    pip --no-cache-dir install mlflow==$MLFLOW_VERSION && \
     mamba clean --all -f -y 
 
 # configure python 3.8 env with kedro
