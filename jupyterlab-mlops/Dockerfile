@@ -1,9 +1,24 @@
 FROM jupyter/pyspark-notebook:lab-3.1.9
 
-ARG MLFLOW_VERSION="1.20.2"
+ARG MLFLOW_VERSION="1.21.0"
 ARG KEDRO_VERSION="0.17.5"
 
 USER root
+
+# patch spark UI (https://github.com/jupyterhub/jupyter-server-proxy/issues/57)
+COPY patches/ /tmp/patches
+
+RUN apt update && \
+    apt install -y zip patch && \
+    mkdir -p /tmp/patches/org/apache/spark/ui/static/ && \
+    unzip -p /usr/local/spark/jars/spark-core_2.12-3.1.2.jar org/apache/spark/ui/static/stagepage.js > /tmp/patches/org/apache/spark/ui/static/stagepage.js && \
+    unzip -p /usr/local/spark/jars/spark-core_2.12-3.1.2.jar org/apache/spark/ui/static/utils.js > /tmp/patches/org/apache/spark/ui/static/utils.js && \
+    patch /tmp/patches/org/apache/spark/ui/static/stagepage.js < /tmp/patches/stagepage.js.patch && \
+    patch /tmp/patches/org/apache/spark/ui/static/utils.js < /tmp/patches/utils.js.patch && \
+    pushd /tmp/patches && \
+    zip -u /usr/local/spark/jars/spark-core_2.12-3.1.2.jar org/apache/spark/ui/static/* && \
+    popd && \
+    rm -rf /tmp/patches
 
 # allow passwordless sudo and add group required by kubeflow
 RUN echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
