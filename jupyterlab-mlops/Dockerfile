@@ -34,7 +34,8 @@ USER jovyan
 RUN pip install --no-cache-dir jupyterlab-git
 
 # add kfp and install mlflow inside jupyterlab
-RUN mamba install --quiet --yes kfp mlflow=$MLFLOW_VERSION jupyter-server-proxy -c conda-forge && \
+RUN mamba install --quiet --yes kfp jupyter-server-proxy -c conda-forge && \
+    pip install mlflow==$MLFLOW_VERSION && \
     mamba clean --all -f -y 
 
 # configure python 3.8 env with kedro
