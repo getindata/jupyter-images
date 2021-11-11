@@ -1,0 +1,2 @@
+72a73
+>     if (window.location.pathname.startsWith('/notebook')) { indexOfProxy = 0; }

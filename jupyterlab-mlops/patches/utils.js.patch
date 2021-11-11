@@ -1,0 +1,6 @@
+94a95
+>   if (window.location.pathname.startsWith('/notebook')) { ind = 0; }
+145a147
+>   if (window.location.pathname.startsWith('/notebook')) { ind = 0; }
+179a182
+>     if (window.location.pathname.startsWith('/notebook')) { ind = 0; }
