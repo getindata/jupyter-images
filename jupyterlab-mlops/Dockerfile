@@ -1,4 +1,4 @@
-FROM jupyter/pyspark-notebook:lab-3.1.9
+FROM jupyter/pyspark-notebook:lab-3.2.1
 
 ARG MLFLOW_VERSION="1.21.0"
 ARG KEDRO_VERSION="0.17.5"
