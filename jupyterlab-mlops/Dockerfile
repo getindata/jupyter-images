@@ -11,12 +11,12 @@ COPY patches/ /tmp/patches
 RUN apt update && \
     apt install -y zip patch && \
     mkdir -p /tmp/patches/org/apache/spark/ui/static/ && \
-    unzip -p /usr/local/spark/jars/spark-core_2.12-3.1.2.jar org/apache/spark/ui/static/stagepage.js > /tmp/patches/org/apache/spark/ui/static/stagepage.js && \
-    unzip -p /usr/local/spark/jars/spark-core_2.12-3.1.2.jar org/apache/spark/ui/static/utils.js > /tmp/patches/org/apache/spark/ui/static/utils.js && \
+    unzip -p /usr/local/spark/jars/spark-core_2.12-3.2.0.jar org/apache/spark/ui/static/stagepage.js > /tmp/patches/org/apache/spark/ui/static/stagepage.js && \
+    unzip -p /usr/local/spark/jars/spark-core_2.12-3.2.0.jar org/apache/spark/ui/static/utils.js > /tmp/patches/org/apache/spark/ui/static/utils.js && \
     patch /tmp/patches/org/apache/spark/ui/static/stagepage.js < /tmp/patches/stagepage.js.patch && \
     patch /tmp/patches/org/apache/spark/ui/static/utils.js < /tmp/patches/utils.js.patch && \
     pushd /tmp/patches && \
-    zip -u /usr/local/spark/jars/spark-core_2.12-3.1.2.jar org/apache/spark/ui/static/* && \
+    zip -u /usr/local/spark/jars/spark-core_2.12-3.2.0.jar org/apache/spark/ui/static/* && \
     popd && \
     rm -rf /tmp/patches /var/lib/apt/lists/*
 
