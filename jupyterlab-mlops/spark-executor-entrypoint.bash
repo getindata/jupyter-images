@@ -9,7 +9,7 @@ while ! timeout 1 bash -c "echo > $SOCKET"; do
 done
 
 echo "Running Spark executor"
-/usr/local/spark-3.1.2-bin-hadoop3.2/kubernetes/dockerfiles/spark/entrypoint.sh executor
+/usr/local/spark-3.2.0-bin-hadoop3.2/kubernetes/dockerfiles/spark/entrypoint.sh executor
 EXIT_CODE=$?
 
 echo "Stopping istio-proxy (if enabled)"
