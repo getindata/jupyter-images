@@ -26,6 +26,23 @@ Compatibility:
 - [x] [Kubeflow Notebook Servers](https://www.kubeflow.org/docs/components/notebooks/)
 - [x] [Vertex AI Notebooks](https://cloud.google.com/vertex-ai/docs/general/notebooks)
 
+## jupyterlab-dataops
+
+Based on the [jupyter/base-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-base-notebook)
+image with additional setup:
+
+* conda-backed python 3.8.8 environment
+* [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
+* [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
+* local [code-server](https://github.com/coder/code-server) as IDE accessed from the browser with
+[dbt Power User](https://marketplace.visualstudio.com/items?itemName=innoverio.vscode-dbt-power-user) extension pre-installed
+* [dbt](https://docs.getdbt.com/) CLI
+
+Compatibility:
+
+- [x] [JupyterHub](https://jupyter.org/hub)
+- [x] [Vertex AI Notebooks](https://cloud.google.com/vertex-ai/docs/general/notebooks)
+
 #### How to use this image?
 
 In Kubeflow Notebooks select *Custom Image* checkbox and enter image location:
