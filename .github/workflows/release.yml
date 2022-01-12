@@ -41,10 +41,10 @@ jobs:
           username: _json_key
           password: ${{ secrets.PUBLIC_GCR_DEPLOY_SA_KEY }}
 
-      - name: Build ${ env.IMAGE_NAME }}
+      - name: Build ${{ env.IMAGE_NAME }}
         uses: docker/build-push-action@v2
         with:
-          context: ${ env.IMAGE_NAME }}
+          context: ${{ env.IMAGE_NAME }}
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           tags: gcr.io/getindata-images-public/${{ env.IMAGE_NAME }}:${{ env.IMAGE_VERSION }},gcr.io/getindata-images-public/${{ env.IMAGE_NAME }}:latest
