@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "*.sql": "jinja-sql"
+  },
+  "python.pythonPath": "/opt/conda/bin/python"
+}
