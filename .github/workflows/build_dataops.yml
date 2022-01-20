@@ -38,11 +38,6 @@ jobs:
           context: jupyterlab-dataops
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: gcr.io/getindata-images-public/jupyterlab-dataops:dev
+          tags: gcr.io/getindata-images-public/jupyterlab-dataops:docker-dev
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
