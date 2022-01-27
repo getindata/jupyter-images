@@ -8,6 +8,9 @@ on:
 jobs:
   buildx-mlops:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        base-image: [ "jupyter/pyspark-notebook:lab-3.2.1", "gcr.io/deeplearning-platform-release/base-cpu:m88" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -41,6 +44,8 @@ jobs:
           tags: gcr.io/getindata-images-public/jupyterlab-mlops:dev
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
+          build-args: |
+            BASE_IMAGE=${{ matrix.base-image }}
 
       - name: Move cache
         run: |

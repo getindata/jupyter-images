@@ -1,4 +1,5 @@
-FROM jupyter/pyspark-notebook:lab-3.2.1
+ARG BASE_IMAGE
+FROM $BASE_IMAGE
 
 ARG MLFLOW_VERSION="1.21.0"
 ARG KEDRO_VERSION="0.17.5"
