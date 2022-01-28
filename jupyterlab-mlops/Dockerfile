@@ -4,13 +4,16 @@ FROM $BASE_IMAGE
 ARG MLFLOW_VERSION
 ARG KEDRO_VERSION
 
-ARG SPARK_SUPPORT=true
+ARG SPARK_SUPPORT
 USER root
 
 # patch spark UI (https://github.com/jupyterhub/jupyter-server-proxy/issues/57)
 COPY patches/ /tmp/patches
+COPY spark-executor-entrypoint.bash /tmp/patches/
+COPY spark-driver-entrypoint.sh /tmp/patches/
 
-RUN apt update && \
+RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
+    apt update && \
     apt install -y zip patch && \
     mkdir -p /tmp/patches/org/apache/spark/ui/static/ && \
     unzip -p /usr/local/spark/jars/spark-core_2.12-3.2.0.jar org/apache/spark/ui/static/stagepage.js > /tmp/patches/org/apache/spark/ui/static/stagepage.js && \
@@ -20,7 +23,10 @@ RUN apt update && \
     pushd /tmp/patches && \
     zip -u /usr/local/spark/jars/spark-core_2.12-3.2.0.jar org/apache/spark/ui/static/* && \
     popd && \
-    rm -rf /tmp/patches /var/lib/apt/lists/*
+    cp /tmp/patches/spark-executor-entrypoint.bash /usr/local/bin/executor && \
+    cp /tmp/patches/spark-driver-entrypoint.sh/usr/local/bin/driver && \
+    rm -rf /tmp/patches /var/lib/apt/lists/* \
+    fi
 
 # allow passwordless sudo and add group required by kubeflow
 RUN echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
@@ -48,8 +54,6 @@ RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipytho
     fix-permissions "${CONDA_DIR}"
     
 COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
-COPY spark-executor-entrypoint.bash /usr/local/bin/executor
-COPY spark-driver-entrypoint.sh /usr/local/bin/driver
 
 ENV PATH "${PATH}:${CONDA_DIR}/envs/python38/bin"
 ENV CONDA_DEFAULT_ENV python38
