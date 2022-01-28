@@ -24,7 +24,7 @@ RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
     zip -u /usr/local/spark/jars/spark-core_2.12-3.2.0.jar org/apache/spark/ui/static/* && \
     popd && \
     cp /tmp/patches/spark-executor-entrypoint.bash /usr/local/bin/executor && \
-    cp /tmp/patches/spark-driver-entrypoint.sh/usr/local/bin/driver && \
+    cp /tmp/patches/spark-driver-entrypoint.sh /usr/local/bin/driver && \
     rm -rf /tmp/patches /var/lib/apt/lists/* \
     fi
 
