@@ -1,9 +1,10 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
-ARG MLFLOW_VERSION="1.21.0"
-ARG KEDRO_VERSION="0.17.5"
+ARG MLFLOW_VERSION
+ARG KEDRO_VERSION
 
+ARG SPARK_SUPPORT=true
 USER root
 
 # patch spark UI (https://github.com/jupyterhub/jupyter-server-proxy/issues/57)
