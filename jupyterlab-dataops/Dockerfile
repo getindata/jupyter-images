@@ -4,13 +4,15 @@ FROM $BASE_IMAGE
 USER root
 ARG PIP_VERSION=21.0.1
 ARG USER_NAME=jovyan
+ARG PROVIDER=""
 ENV HOME=/tmp/$USER_NAME
 
 ADD resources/bin/*.sh /opt/tools/bin/
 ADD resources/logos/* /opt/tools/logos/
 ADD resources/config/jupyter_notebook_config.py resources/config/jupyter_server_config.py  /etc/jupyter/
 ADD resources/vsc/vsix/* /tmp/$NB_USER/vsix/
-ADD requirements.txt $HOME/
+# Copy `requirements.txt` and `requirements-${PROVIDER}.txt`, if exists.
+COPY requirements.txt requirements-${PROVIDER}.tx[t] $HOME/
 
 RUN apt-get update --fix-missing && apt-get -qq -y install \
     curl \
@@ -27,8 +29,9 @@ RUN mkdir -p $HOME && chown -R $USER_NAME $HOME && \
     mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
 
 # Install Python and Jupyter extensions
-RUN pip install -r $HOME/requirements.txt && \
-    jupyter labextension install @jupyterlab/server-proxy jupyterlab-topbar-extension
+RUN pip install -r $HOME/requirements.txt
+RUN if [[ -z "$PROVIDER" ]] ; then echo "Argument PROVIDER not provided" ; else pip install -r $HOME/requirements-${PROVIDER}.txt ; fi
+RUN jupyter labextension install @jupyterlab/server-proxy jupyterlab-topbar-extension
 
 # Install code server
 RUN cd /opt/ && wget https://github.com/cdr/code-server/releases/download/v3.12.0/code-server-3.12.0-linux-amd64.tar.gz && \
