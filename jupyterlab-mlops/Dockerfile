@@ -35,8 +35,10 @@ RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
     rm -rf /tmp/patches /var/lib/apt/lists/* ; \
     fi
 
+# delete user jupyter if exists
+RUN  if [ "$( id jupyter 2>/dev/null | wc -l)" -eq 1 ]; then userdel jupyter; fi
 # add user $NB_USER if not exits
-RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/bash $NB_USER; fi
+RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/bash -u $NB_UID $NB_USER; fi
 
 # allow passwordless sudo and add group required by kubeflow
 RUN echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
@@ -66,10 +68,10 @@ RUN mamba install --quiet --yes kfp jupyter-server-proxy -c conda-forge && \
 # configure python 3.8 env with kedro
 RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipython ipykernel kedro=$KEDRO_VERSION && \
     mamba clean --all -f -y && \
-    "${CONDA_DIR}/envs/python38/bin/python" -m ipykernel install --user --name=python38 && \
+    "${CONDA_DIR}/envs/python38/bin/python" -m ipykernel install --user --name=kedro-python38 && \
     fix-permissions "/home/${NB_USER}" && \
     fix-permissions "${CONDA_DIR}"
-    
+
 COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
 
 ENV PATH "${PATH}:${CONDA_DIR}/envs/python38/bin"
