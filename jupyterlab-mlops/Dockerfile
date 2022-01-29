@@ -6,7 +6,7 @@ ARG MLFLOW_VERSION
 ARG KEDRO_VERSION
 ARG SPARK_SUPPORT
 
-ENV NB_USER=jovyan
+ENV NB_USER=jupyter
 ENV NB_UID=1000
 ENV NB_GID=100
 ENV CONDA_DIR=/opt/conda
@@ -35,8 +35,9 @@ RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
     rm -rf /tmp/patches /var/lib/apt/lists/* ; \
     fi
 
-# delete user jupyter if exists
-RUN  if [ "$( id jupyter 2>/dev/null | wc -l)" -eq 1 ]; then userdel jupyter; fi
+# delete user jupyter,jovyan if exists
+RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 1 ]; then userdel $NB_USER; fi
+RUN  if [ "$( id jovyan 2>/dev/null | wc -l)" -eq 1 ]; then userdel jovyan; fi
 # add user $NB_USER if not exits
 RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/bash -u $NB_UID $NB_USER; fi
 
