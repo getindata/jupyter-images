@@ -15,12 +15,9 @@ jobs:
         include:
           - base-image: "jupyter/pyspark-notebook:lab-3.2.1"
             spark-support: true
-            kedro-version: $KEDRO_DEFAULT_VERSION
-            mlflow-version: $MLFLOW_DEFAULT_VERSION
-#          - base-image: "gcr.io/deeplearning-platform-release/base-cpu:m88"
-#            spark-support: false
-#            kedro-version: $KEDRO_DEFAULT_VERSION
-#            mlflow-version: $MLFLOW_DEFAULT_VERSION
+          - base-image: "gcr.io/deeplearning-platform-release/base-cpu:m88"
+            spark-support: false
+            mlflow-version: 1.23.1
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -57,8 +54,8 @@ jobs:
           build-args: |
             BASE_IMAGE=${{ matrix.base-image }}
             SPARK_SUPPORT=${{ matrix.spark-support }}
-            KEDRO_VERSION=${{ matrix.kedro-version }}
-            MLFLOW_VERSION=${{ matrix.mlflow-version }}
+            KEDRO_VERSION=${{ matrix.kedro-version  || env.KEDRO_DEFAULT_VERSION }}
+            MLFLOW_VERSION=${{ matrix.mlflow-version || env.MLFLOW_DEFAULT_VERSION }}
 
       - name: Move cache
         run: |

@@ -1,10 +1,16 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
+#inputs
 ARG MLFLOW_VERSION
 ARG KEDRO_VERSION
-
 ARG SPARK_SUPPORT
+
+ENV NB_USER=jovyan
+ENV NB_UID=1000
+ENV NB_GID=100
+ENV CONDA_DIR=/opt/conda
+
 USER root
 
 # patch spark UI (https://github.com/jupyterhub/jupyter-server-proxy/issues/57)
@@ -13,7 +19,8 @@ COPY spark-executor-entrypoint.bash /tmp/patches/
 COPY spark-driver-entrypoint.sh /tmp/patches/
 
 RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
-    apt update && \
+    apt clean && \
+    apt update --fix-missing && \
     apt install -y zip patch && \
     mkdir -p /tmp/patches/org/apache/spark/ui/static/ && \
     unzip -p /usr/local/spark/jars/spark-core_2.12-3.2.0.jar org/apache/spark/ui/static/stagepage.js > /tmp/patches/org/apache/spark/ui/static/stagepage.js && \
@@ -25,18 +32,28 @@ RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
     popd && \
     cp /tmp/patches/spark-executor-entrypoint.bash /usr/local/bin/executor && \
     cp /tmp/patches/spark-driver-entrypoint.sh /usr/local/bin/driver && \
-    rm -rf /tmp/patches /var/lib/apt/lists/* \
+    rm -rf /tmp/patches /var/lib/apt/lists/* ; \
     fi
 
+# add user $NB_USER if not exits
+RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/bash $NB_USER; fi
+
 # allow passwordless sudo and add group required by kubeflow
-RUN echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
+RUN echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
     groupadd -g 1337 nbusers
+
+#install mamba if not exists
+RUN if [ "$( which mamba | wc -l )" -eq 0 ]; then conda install mamba -n base -c conda-forge && chmod 777 -R /opt/conda/; fi
+
+#copy fix-permissions
+COPY resources/jupyter/fix-permissions /usr/local/bin/fix-permissions
+RUN chmod 755 /usr/local/bin/fix-permissions
 
 # copy mlflow logo and start script
 COPY mlflow/start-mlflow.sh /usr/local/bin
 COPY mlflow/logo.svg /usr/local/share/mlflow-logo.svg
 
-USER jovyan
+USER $NB_USER
 
 # install git extension
 RUN pip install --no-cache-dir jupyterlab-git
