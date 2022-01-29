@@ -15,9 +15,11 @@ jobs:
         include:
           - base-image: "jupyter/pyspark-notebook:lab-3.2.1"
             spark-support: true
+            tag-base: dev
           - base-image: "gcr.io/deeplearning-platform-release/base-cpu:m88"
             spark-support: false
             mlflow-version: 1.23.1
+            tag-base: vertex
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -48,7 +50,7 @@ jobs:
           context: jupyterlab-mlops
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: gcr.io/getindata-images-public/jupyterlab-mlops:dev
+          tags: gcr.io/getindata-images-public/jupyterlab-mlops:${{ matrix.tag-base }}-${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build-args: |
