@@ -6,6 +6,7 @@ c = get_config()  # noqa: F821
 c.ServerApp.ip = "0.0.0.0"
 c.ServerApp.port = 8888
 c.ServerApp.open_browser = False
+c.ServerApp.allow_root = False
 
 def get_gooogle_instance_attribute(attribute_name):
     try:
@@ -29,6 +30,7 @@ try:
     assert proxy_url.endswith('notebooks.googleusercontent.com') # Proxy was set
     c.ServerApp.allow_origin_pat = 'https://' + proxy_url
     c.ServerApp.port = 8080
+    c.ServerApp.root_dir = f"/home/{os.environ['NB_USER']}"
 except Exception: # not running on Vertex AI
     pass
 
