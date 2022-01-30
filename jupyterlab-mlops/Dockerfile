@@ -41,6 +41,9 @@ RUN  if [ "$( id jovyan 2>/dev/null | wc -l)" -eq 1 ]; then userdel jovyan; fi
 # add user $NB_USER if not exits
 RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/bash -u $NB_UID $NB_USER; fi
 
+# add group GID 1001 if not exists (for Vertex)
+RUN  if [ "$( grep 1001 /etc/group | wc -l)" -eq 0 ]; then groupadd -g 1001 jupyter-group; fi
+
 # allow passwordless sudo and add group required by kubeflow
 RUN echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
     groupadd -g 1337 nbusers
@@ -72,6 +75,7 @@ RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipytho
     "${CONDA_DIR}/envs/python38/bin/python" -m ipykernel install --user --name=kedro-python38 && \
     fix-permissions "/home/${NB_USER}" && \
     fix-permissions "${CONDA_DIR}"
+# does above kernel installation make any sense in case of mounting home dir ?
 
 COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
 
