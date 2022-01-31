@@ -72,10 +72,10 @@ RUN mamba install --quiet --yes kfp jupyter-server-proxy -c conda-forge && \
 # configure python 3.8 env with kedro
 RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipython ipykernel kedro=$KEDRO_VERSION && \
     mamba clean --all -f -y && \
-    "${CONDA_DIR}/envs/python38/bin/python" -m ipykernel install --user --name=kedro-python38 && \
+    "${CONDA_DIR}/envs/python38/bin/python" -m ipykernel install --user --name=python38 && \
     fix-permissions "/home/${NB_USER}" && \
     fix-permissions "${CONDA_DIR}"
-# does above kernel installation make any sense in case of mounting home dir ?
+# above kernel installation makes sense in case of ephemeral KF notebooks (no home remounting)
 
 COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
 
