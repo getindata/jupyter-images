@@ -5,6 +5,7 @@ c.NotebookApp.open_browser = False
 c.ServerApp.token = ''
 c.ServerApp.password = ''
 c.ServerApp.base_url=os.getenv('NB_PREFIX', '')
+c.ServerApp.root_dir = f"/home/{os.environ['NB_USER']}"
 
 # https://github.com/jupyter/notebook/issues/3130
 c.FileContentsManager.delete_to_trash = False
