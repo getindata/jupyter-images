@@ -22,3 +22,15 @@ c.ServerProxy.servers = {
         }
     }
 }
+
+if os.getenv('VSCODE_VERSION', 'NONE') != 'NONE':
+    c.ServerProxy.servers['vscode'] = {
+        'command': ['/bin/bash', '-c', '/usr/local/bin/start-vscode.sh', '{port}'],
+        'port': 7000,
+        'absolute_url': False,
+        'timeout': 30,
+        'launcher_entry': {
+            'title': "VSCode",
+            'icon_path': '/usr/local/share/vscode-logo.svg',
+        }
+    }

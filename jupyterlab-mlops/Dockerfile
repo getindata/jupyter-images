@@ -4,12 +4,14 @@ FROM $BASE_IMAGE
 #inputs
 ARG MLFLOW_VERSION
 ARG KEDRO_VERSION
+ARG VSCODE_VERSION
 ARG SPARK_SUPPORT
 
 ENV NB_USER=jupyter
 ENV NB_UID=1000
 ENV NB_GID=100
 ENV CONDA_DIR=/opt/conda
+ENV VSCODE_VERSION=$VSCODE_VERSION
 
 USER root
 
@@ -56,8 +58,21 @@ COPY resources/jupyter/fix-permissions /usr/local/bin/fix-permissions
 RUN chmod 755 /usr/local/bin/fix-permissions
 
 # copy mlflow logo and start script
-COPY mlflow/start-mlflow.sh /usr/local/bin
-COPY mlflow/logo.svg /usr/local/share/mlflow-logo.svg
+COPY resources/mlflow/start-mlflow.sh /usr/local/bin
+COPY resources/mlflow/logo.svg /usr/local/share/mlflow-logo.svg
+
+# copy mlflow logo and start script
+COPY resources/vscode/start-vscode.sh /usr/local/bin
+COPY resources/vscode/logo.svg /usr/local/share/vscode-logo.svg
+
+#vs code
+RUN if [ "$VSCODE_VERSION" != "NONE" ]; then \
+      cd /opt/ && \
+      wget https://github.com/cdr/code-server/releases/download/v${VSCODE_VERSION}/code-server-${VSCODE_VERSION}-linux-amd64.tar.gz && \
+      tar zxvf code-server-${VSCODE_VERSION}-linux-amd64.tar.gz && \
+      ln -s /opt/code-server-${VSCODE_VERSION}-linux-amd64 /opt/code-server  && \
+      rm -rf code-server-${VSCODE_VERSION}-linux-amd64.tar.gz ; \
+    fi
 
 USER $NB_USER
 
