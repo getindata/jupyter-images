@@ -2,6 +2,7 @@ name: Build jupyterlab-mlops Image
 env:
   KEDRO_DEFAULT_VERSION: "0.17.5"
   MLFLOW_DEFAULT_VERSION: "1.21.0"
+  VSCODE_DEFAULT_VERSION: "NONE"
 on:
   pull_request:
     paths:
@@ -15,10 +16,12 @@ jobs:
         include:
           - base-image: "jupyter/pyspark-notebook:lab-3.2.1"
             spark-support: true
+            vscode-version: 4.0.2
             tag-base: dev
           - base-image: "gcr.io/deeplearning-platform-release/base-cpu:m88"
             spark-support: false
             mlflow-version: 1.23.1
+            vscode-version: 4.0.2
             tag-base: vertex
     steps:
       - name: Checkout
@@ -58,6 +61,7 @@ jobs:
             SPARK_SUPPORT=${{ matrix.spark-support }}
             KEDRO_VERSION=${{ matrix.kedro-version  || env.KEDRO_DEFAULT_VERSION }}
             MLFLOW_VERSION=${{ matrix.mlflow-version || env.MLFLOW_DEFAULT_VERSION }}
+            VSCODE_VERSION=${{ matrix.vscode-version || env.VSCODE_DEFAULT_VERSION }}
 
       - name: Move cache
         run: |
