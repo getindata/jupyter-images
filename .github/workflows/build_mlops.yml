@@ -7,6 +7,9 @@ on:
   pull_request:
     paths:
       - 'jupyterlab-mlops/**'
+  push:
+    tags:
+      - 'jupyterlab-mlops-*.*.*'
 
 jobs:
   buildx-mlops:
@@ -47,13 +50,21 @@ jobs:
           username: _json_key
           password: ${{ secrets.PUBLIC_GCR_DEPLOY_SA_KEY }}
 
+      - name: Extract tag
+        if: github.event_name == 'push'
+        id: tag-info
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/*/}
+          IMAGE_VERSION=`echo $TAG_NAME | sed -e's/\(.*\)-\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\)\+/\2/'`
+          echo "::set-output name=IMAGE_VERSION::$IMAGE_VERSION"
+
       - name: Build jupyterlab-mlops
         uses: docker/build-push-action@v2
         with:
           context: jupyterlab-mlops
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: gcr.io/getindata-images-public/jupyterlab-mlops:${{ matrix.tag-base }}-${{ github.sha }}
+          tags: gcr.io/getindata-images-public/jupyterlab-mlops:${{ matrix.tag-base }}-${{ github.sha }},gcr.io/getindata-images-public/jupyterlab-mlops:${{ matrix.tag-base }}-${{ steps.tag-info.outputs.IMAGE_VERSION || 'latest' }},gcr.io/getindata-images-public/jupyterlab-mlops:${{ matrix.tag-base }}-latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build-args: |
