@@ -3,7 +3,6 @@ name: Build & Publish Jupyterlab Image
 on:
   push:
     tags:
-      - 'jupyterlab-mlops-*.*.*'
       - 'jupyterlab-dataops-*.*.*'
 
 jobs:
