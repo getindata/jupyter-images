@@ -5,8 +5,9 @@ env:
   VSCODE_DEFAULT_VERSION: "NONE"
 on:
   pull_request:
-    branches:
+    paths:
       - 'jupyterlab-mlops/**'
+      - '.github/workflows/build_mlops.yml'
   push:
     tags:
       - 'jupyterlab-mlops-*.*.*'
