@@ -74,7 +74,7 @@ jobs:
             KEDRO_VERSION=${{ matrix.kedro-version  || env.KEDRO_DEFAULT_VERSION }}
             MLFLOW_VERSION=${{ matrix.mlflow-version || env.MLFLOW_DEFAULT_VERSION }}
             VSCODE_VERSION=${{ matrix.vscode-version || env.VSCODE_DEFAULT_VERSION }}
-            NB_USER=${{ matrix.nb-user || "jupyter" }}
+            NB_USER=${{ matrix.nb-user || 'jupyter' }}
 
       - name: Move cache
         run: |
