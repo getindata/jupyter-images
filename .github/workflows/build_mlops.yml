@@ -4,11 +4,10 @@ env:
   MLFLOW_DEFAULT_VERSION: "1.23.1"
   VSCODE_DEFAULT_VERSION: "NONE"
 on:
-  pull_request:
+  push:
     paths:
       - 'jupyterlab-mlops/**'
       - '.github/workflows/build_mlops.yml'
-  push:
     tags:
       - 'jupyterlab-mlops-*.*.*'
 
