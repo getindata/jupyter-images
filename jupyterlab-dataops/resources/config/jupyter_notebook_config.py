@@ -20,3 +20,14 @@ c.ServerProxy.servers['vscode'] = {
         'icon_path': '/opt/tools/logos/vs-code.svg',
     }
 }
+c.ServerProxy.servers['cloudbeaver'] = {
+    'command': ['/bin/bash', '-c', 'cd /opt/tools/cloudbeaver && ./run-server.sh', '{port}'],
+    'port': 8978,
+    'absolute_url': True,
+    'timeout': 30,
+    'new_browser_tab': False,
+    'launcher_entry': {
+        'title': "CloudBeaver",
+        'icon_path': '/opt/tools/logos/cloudbeaver.svg',
+    }
+}
