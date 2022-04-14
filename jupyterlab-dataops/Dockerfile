@@ -53,7 +53,7 @@ ADD resources/cloudbeaver/drivers/pom-${PROVIDER:-default}.xm[l] /tmp/cloudbeave
 ADD resources/cloudbeaver/drivers/${PROVIDER}/pom.xm[l] /tmp/cloudbeaver/server/drivers/bigquery/pom.xml
 
 # Build
-RUN cd /tmp/cloudbeaver/deploy && ./build.sh
+RUN cd /tmp/cloudbeaver/deploy && ./build.sh "" ""
 
 RUN mkdir -p $HOME && chown -R $USER_NAME $HOME && \
     mkdir -p /opt/tools/{bin,logos} && \
