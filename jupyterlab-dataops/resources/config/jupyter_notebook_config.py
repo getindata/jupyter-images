@@ -31,3 +31,14 @@ c.ServerProxy.servers['cloudbeaver'] = {
         'icon_path': '/opt/tools/logos/cloudbeaver.svg',
     }
 }
+c.ServerProxy.servers['dbt_docs'] = {
+    'command': ['echo'],
+    'port': 9328,
+    'absolute_url': False,
+    'timeout': 180,
+    'new_browser_tab': False,
+    'launcher_entry': {
+        'title': "DBT Docs",
+        'icon_path': '/opt/tools/logos/docs.svg',
+    }
+}
