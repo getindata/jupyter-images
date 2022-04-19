@@ -53,7 +53,7 @@ ADD resources/cloudbeaver/drivers/pom-${PROVIDER:-default}.xm[l] /tmp/cloudbeave
 ADD resources/cloudbeaver/drivers/${PROVIDER}/pom.xm[l] /tmp/cloudbeaver/server/drivers/bigquery/pom.xml
 
 # Build
-RUN cd /tmp/cloudbeaver/deploy && ./build.sh
+RUN cd /tmp/cloudbeaver/deploy && ./build.sh "" ""
 
 RUN mkdir -p $HOME && chown -R $USER_NAME $HOME && \
     mkdir -p /opt/tools/{bin,logos} && \
@@ -66,8 +66,8 @@ RUN if [[ -z "$PROVIDER" ]] ; then echo "Argument PROVIDER not provided" ; else 
 RUN jupyter labextension install @jupyterlab/server-proxy jupyterlab-topbar-extension
 
 # Install code server
-RUN cd /opt/ && wget https://github.com/cdr/code-server/releases/download/v3.12.0/code-server-3.12.0-linux-amd64.tar.gz && \
-    tar zxvf code-server-3.12.0-linux-amd64.tar.gz
+RUN cd /opt/ && wget https://github.com/cdr/code-server/releases/download/v4.3.0/code-server-4.3.0-linux-amd64.tar.gz && \
+    tar zxvf code-server-4.3.0-linux-amd64.tar.gz
 
 # Copy Cloudbeaver
 RUN mv /tmp/cloudbeaver/deploy/cloudbeaver /opt/tools/cloudbeaver
@@ -80,7 +80,7 @@ RUN /opt/code-server-*-linux-amd64/bin/code-server \
     --config $HOME/code-server/config.yaml \
     --install-extension ms-python.python \
     /opt/code-server-*-linux-amd64/bin/code-server \
-    --install-extension /tmp/$NB_USER/vsix/innoverio.vscode-dbt-power-user-0.5.9.vsix \
+    --install-extension /tmp/$NB_USER/vsix/innoverio.vscode-dbt-power-user-0.5.16.vsix \
     /opt/code-server-*-linux-amd64/bin/code-server \
     --install-extension /tmp/$NB_USER/vsix/bastienboutonnet.vscode-dbt-0.5.1.vsix
 
