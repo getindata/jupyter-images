@@ -7,6 +7,7 @@ c.ServerApp.password = ''
 c.ServerApp.base_url=os.getenv('NB_PREFIX', '')
 
 c.FileContentsManager.delete_to_trash = False
+c.FileCheckpoints.checkpoint_dir = '/home/jovyan/checkpoints'
 
 c.ServerProxy.servers = {}
 c.ServerProxy.servers['vscode'] = {
