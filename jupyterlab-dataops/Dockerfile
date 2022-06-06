@@ -15,45 +15,45 @@ ADD resources/vsc/vsix/* /tmp/$NB_USER/vsix/
 COPY requirements.txt requirements-${PROVIDER}.tx[t] $HOME/
 
 RUN apt-get update --fix-missing && apt-get -qq -y install \
-    curl \
-    gnupg2
+    curl 
+#     gnupg2
 
-RUN sh -c 'curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \
-    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
+# RUN sh -c 'curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
+#     echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \
+#     curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -'
 
 RUN apt-get update --fix-missing && apt-get -qq -y install \
     unzip \
     zip \
     jq \
-    git \
-    openjdk-11-jdk \
-    maven \
-    yarn \
-    nodejs && \
+    git && \
+    # openjdk-11-jdk \
+    # maven \
+    # yarn \
+    # nodejs && \
     rm /bin/sh && ln -s /bin/bash /bin/sh
 
-# Cloudbeaver needs newer node
-RUN ln -sf /bin/node /opt/conda/bin/node
-RUN ln -sf /bin/npm /opt/conda/bin/npm
+# # Cloudbeaver needs newer node
+# RUN ln -sf /bin/node /opt/conda/bin/node
+# RUN ln -sf /bin/npm /opt/conda/bin/npm
 
-RUN npm install -g lerna
+# RUN npm install -g lerna
 
-# Clone cloudbeaver
-RUN git clone https://github.com/dbeaver/cloudbeaver.git /tmp/cloudbeaver && \
-    cd /tmp/cloudbeaver
+# # Clone cloudbeaver
+# RUN git clone https://github.com/dbeaver/cloudbeaver.git /tmp/cloudbeaver && \
+#     cd /tmp/cloudbeaver
 
-# Add BigQuery drivers
-RUN if [[ $PROVIDER == "bigquery" ]] ; then mkdir -p /tmp/cloudbeaver/server/drivers/bigquery/src/main/resources && \
-    wget https://storage.googleapis.com/simba-bq-release/jdbc/SimbaJDBCDriverforGoogleBigQuery42_1.2.16.1020.zip && \
-    unzip SimbaJDBCDriverforGoogleBigQuery42_1.2.16.1020.zip -d /tmp/cloudbeaver/server/drivers/bigquery/src/main/resources && \
-    rm SimbaJDBCDriverforGoogleBigQuery42_1.2.16.1020.zip ; fi
-ADD resources/cloudbeaver/plugin-${PROVIDER:-default}.xm[l] /tmp/cloudbeaver/server/bundles/io.cloudbeaver.resources.drivers.base/plugin.xml
-ADD resources/cloudbeaver/drivers/pom-${PROVIDER:-default}.xm[l] /tmp/cloudbeaver/server/drivers/pom.xml
-ADD resources/cloudbeaver/drivers/${PROVIDER}/pom.xm[l] /tmp/cloudbeaver/server/drivers/bigquery/pom.xml
+# # Add BigQuery drivers
+# RUN if [[ $PROVIDER == "bigquery" ]] ; then mkdir -p /tmp/cloudbeaver/server/drivers/bigquery/src/main/resources && \
+#     wget https://storage.googleapis.com/simba-bq-release/jdbc/SimbaJDBCDriverforGoogleBigQuery42_1.2.16.1020.zip && \
+#     unzip SimbaJDBCDriverforGoogleBigQuery42_1.2.16.1020.zip -d /tmp/cloudbeaver/server/drivers/bigquery/src/main/resources && \
+#     rm SimbaJDBCDriverforGoogleBigQuery42_1.2.16.1020.zip ; fi
+# ADD resources/cloudbeaver/plugin-${PROVIDER:-default}.xm[l] /tmp/cloudbeaver/server/bundles/io.cloudbeaver.resources.drivers.base/plugin.xml
+# ADD resources/cloudbeaver/drivers/pom-${PROVIDER:-default}.xm[l] /tmp/cloudbeaver/server/drivers/pom.xml
+# ADD resources/cloudbeaver/drivers/${PROVIDER}/pom.xm[l] /tmp/cloudbeaver/server/drivers/bigquery/pom.xml
 
 # Build
-RUN cd /tmp/cloudbeaver/deploy && ./build.sh "" ""
+# RUN cd /tmp/cloudbeaver/deploy && ./build.sh "" ""
 
 RUN mkdir -p $HOME && chown -R $USER_NAME $HOME && \
     mkdir -p /opt/tools/{bin,logos} && \
@@ -69,9 +69,9 @@ RUN jupyter labextension install @jupyterlab/server-proxy jupyterlab-topbar-exte
 RUN cd /opt/ && wget https://github.com/cdr/code-server/releases/download/v4.3.0/code-server-4.3.0-linux-amd64.tar.gz && \
     tar zxvf code-server-4.3.0-linux-amd64.tar.gz
 
-# Copy Cloudbeaver
-RUN mv /tmp/cloudbeaver/deploy/cloudbeaver /opt/tools/cloudbeaver
-RUN mkdir -p /opt/tools/cloudbeaver/workspace && chmod -R 755 /opt/tools && chmod a+rwX -R /opt/tools/cloudbeaver/workspace
+# # Copy Cloudbeaver
+# RUN mv /tmp/cloudbeaver/deploy/cloudbeaver /opt/tools/cloudbeaver
+# RUN mkdir -p /opt/tools/cloudbeaver/workspace && chmod -R 755 /opt/tools && chmod a+rwX -R /opt/tools/cloudbeaver/workspace
 
 USER $NB_USER
 RUN /opt/code-server-*-linux-amd64/bin/code-server \
@@ -86,11 +86,11 @@ RUN /opt/code-server-*-linux-amd64/bin/code-server \
 
 ADD resources/vsc/settings.json $HOME/code-server/data/User/settings.json
 
-COPY resources/cloudbeaver/conf /opt/tools/cloudbeaver/conf
-ADD resources/cloudbeaver/conf/.cloudbeaver.auto.conf /opt/tools/cloudbeaver/conf/.cloudbeaver.auto.conf
-ADD resources/cloudbeaver/conf/cloudbeaver.conf /opt/tools/cloudbeaver/conf/cloudbeaver.conf
-ADD resources/cloudbeaver/conf/initial-data-sources-${PROVIDER}.con[f] /opt/tools/cloudbeaver/conf/initial-data-sources.conf
-ADD resources/cloudbeaver/conf/product.conf /opt/tools/cloudbeaver/conf/product.conf
+# COPY resources/cloudbeaver/conf /opt/tools/cloudbeaver/conf
+# ADD resources/cloudbeaver/conf/.cloudbeaver.auto.conf /opt/tools/cloudbeaver/conf/.cloudbeaver.auto.conf
+# ADD resources/cloudbeaver/conf/cloudbeaver.conf /opt/tools/cloudbeaver/conf/cloudbeaver.conf
+# ADD resources/cloudbeaver/conf/initial-data-sources-${PROVIDER}.con[f] /opt/tools/cloudbeaver/conf/initial-data-sources.conf
+# ADD resources/cloudbeaver/conf/product.conf /opt/tools/cloudbeaver/conf/product.conf
 
 ENV HOME=/home/$USER_NAME
 ENV CODE_WORKINGDIR="${HOME}/work"
