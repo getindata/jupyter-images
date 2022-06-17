@@ -1,6 +1,6 @@
 dbt-core==1.0.4
 copier==5.1.0
 acryl-datahub[datahub-rest]==0.8.17.6
-data-pipelines-cli[docker,datahub,gcs,s3]==0.20.0
+data-pipelines-cli[docker,datahub,gcs,s3]==0.20.1
 jupyterlab-git==0.34.0
 jupyter-server-proxy==3.2.0
