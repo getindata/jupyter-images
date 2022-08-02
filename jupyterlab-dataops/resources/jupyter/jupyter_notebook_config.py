@@ -10,7 +10,7 @@ c.ServerApp.notebook_dir = "/home/jupyter"
 
 # https://github.com/jupyter/notebook/issues/3130
 c.FileContentsManager.delete_to_trash = False
-c.FileCheckpoints.checkpoint_dir = '/home/jovyan/checkpoints'
+c.FileCheckpoints.checkpoint_dir = '/home/jupyter/checkpoints'
 
 
 def _codeserver_command():
@@ -35,14 +35,25 @@ c.ServerProxy.servers['vscode'] = {
         'icon_path': '/opt/logos/vs-code.svg',
     }
 }
-# c.ServerProxy.servers['cloudbeaver'] = {
-#     'command': ['/bin/bash', '-c', 'cd /opt/cloudbeaver && sudo ./run-server.sh', '{port}'],
-#     'port': 8978,
-#     'absolute_url': True,
-#     'timeout': 30,
-#     'new_browser_tab': False,
-#     'launcher_entry': {
-#         'title': "CloudBeaver",
-#         'icon_path': '/opt/logos/cloudbeaver.svg',
-#     }
-# }   
+c.ServerProxy.servers['cloudbeaver'] = {
+    'command': ['/bin/bash', '-c', 'cd /opt/cloudbeaver && sudo ./run-server.sh', '{port}'],
+    'port': 8978,
+    'absolute_url': True,
+    'timeout': 30,
+    'new_browser_tab': False,
+    'launcher_entry': {
+        'title': "CloudBeaver",
+        'icon_path': '/opt/logos/cloudbeaver.svg',
+    }
+}
+c.ServerProxy.servers['dbt_docs'] = {
+    'command': ['dbt docs serve --port {port}'],
+    'port': 9328,
+    'absolute_url': False,
+    'timeout': 180,
+    'new_browser_tab': False,
+    'launcher_entry': {
+        'title': "DBT Docs",
+        'icon_path': '/opt/tools/logos/docs.svg',
+    }
+}
