@@ -1,14 +1,15 @@
-ARG BASE_IMAGE=gcr.io/deeplearning-platform-release/base-cpu:m88
+ARG BASE_IMAGE=jupyter/base-notebook:python-3.8.8
 FROM $BASE_IMAGE
 
 USER root
 ARG PIP_VERSION=21.0.1
-ARG NB_USER=jupyter
+ARG USER_NAME=jovyan
 ARG PROVIDER=""
-ENV HOME=/tmp/$NB_USER
+ENV HOME=/tmp/$USER_NAME
 
 ADD resources/bin/*.sh /opt/tools/bin/
 ADD resources/logos/* /opt/tools/logos/
+ADD resources/config/jupyter_notebook_config.py resources/config/jupyter_server_config.py  /etc/jupyter/
 ADD resources/vsc/vsix/* /tmp/$NB_USER/vsix/
 # Copy `requirements.txt` and `requirements-${PROVIDER}.txt`, if exists.
 COPY requirements.txt requirements-${PROVIDER}.tx[t] $HOME/
@@ -54,7 +55,7 @@ RUN apt-get update --fix-missing && apt-get -qq -y install \
 # Build
 # RUN cd /tmp/cloudbeaver/deploy && ./build.sh "" ""
 
-RUN mkdir -p $HOME && chown -R $NB_USER $HOME && \
+RUN mkdir -p $HOME && chown -R $USER_NAME $HOME && \
     mkdir -p /opt/tools/{bin,logos} && \
     chmod -R 755 /opt/tools/ && \
     mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
@@ -91,9 +92,7 @@ ADD resources/vsc/settings.json $HOME/code-server/data/User/settings.json
 # ADD resources/cloudbeaver/conf/initial-data-sources-${PROVIDER}.con[f] /opt/tools/cloudbeaver/conf/initial-data-sources.conf
 # ADD resources/cloudbeaver/conf/product.conf /opt/tools/cloudbeaver/conf/product.conf
 
-ADD resources/config/jupyter_notebook_config.py resources/config/jupyter_server_config.py  /etc/jupyter/
-
-ENV HOME=/home/$NB_USER
+ENV HOME=/home/$USER_NAME
 ENV CODE_WORKINGDIR="${HOME}/work"
 ENV PATH="${PATH}:${CONDA_DIR}/envs/python38/bin"
 ENV CONDA_DEFAULT_ENV=python38
