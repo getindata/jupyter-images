@@ -9,7 +9,6 @@ ENV HOME=/tmp/$NB_USER
 
 ADD resources/bin/*.sh /opt/tools/bin/
 ADD resources/logos/* /opt/tools/logos/
-ADD resources/config/jupyter_notebook_config.py resources/config/jupyter_server_config.py  /etc/jupyter/
 ADD resources/vsc/vsix/* /tmp/$NB_USER/vsix/
 # Copy `requirements.txt` and `requirements-${PROVIDER}.txt`, if exists.
 COPY requirements.txt requirements-${PROVIDER}.tx[t] $HOME/
@@ -91,6 +90,8 @@ ADD resources/vsc/settings.json $HOME/code-server/data/User/settings.json
 # ADD resources/cloudbeaver/conf/cloudbeaver.conf /opt/tools/cloudbeaver/conf/cloudbeaver.conf
 # ADD resources/cloudbeaver/conf/initial-data-sources-${PROVIDER}.con[f] /opt/tools/cloudbeaver/conf/initial-data-sources.conf
 # ADD resources/cloudbeaver/conf/product.conf /opt/tools/cloudbeaver/conf/product.conf
+
+ADD resources/config/jupyter_notebook_config.py resources/config/jupyter_server_config.py  /etc/jupyter/
 
 ENV HOME=/home/$NB_USER
 ENV CODE_WORKINGDIR="${HOME}/work"
