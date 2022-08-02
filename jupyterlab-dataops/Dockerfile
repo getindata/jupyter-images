@@ -3,9 +3,9 @@ FROM $BASE_IMAGE
 
 USER root
 ARG PIP_VERSION=21.0.1
-ARG USER_NAME=jovyan
+ARG NB_USER=jupyter
 ARG PROVIDER=""
-ENV HOME=/tmp/$USER_NAME
+ENV HOME=/tmp/$NB_USER
 
 ADD resources/bin/*.sh /opt/tools/bin/
 ADD resources/logos/* /opt/tools/logos/
@@ -55,7 +55,7 @@ RUN apt-get update --fix-missing && apt-get -qq -y install \
 # Build
 # RUN cd /tmp/cloudbeaver/deploy && ./build.sh "" ""
 
-RUN mkdir -p $HOME && chown -R $USER_NAME $HOME && \
+RUN mkdir -p $HOME && chown -R $NB_USER $HOME && \
     mkdir -p /opt/tools/{bin,logos} && \
     chmod -R 755 /opt/tools/ && \
     mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
@@ -92,7 +92,7 @@ ADD resources/vsc/settings.json $HOME/code-server/data/User/settings.json
 # ADD resources/cloudbeaver/conf/initial-data-sources-${PROVIDER}.con[f] /opt/tools/cloudbeaver/conf/initial-data-sources.conf
 # ADD resources/cloudbeaver/conf/product.conf /opt/tools/cloudbeaver/conf/product.conf
 
-ENV HOME=/home/$USER_NAME
+ENV HOME=/home/$NB_USER
 ENV CODE_WORKINGDIR="${HOME}/work"
 ENV PATH="${PATH}:${CONDA_DIR}/envs/python38/bin"
 ENV CONDA_DEFAULT_ENV=python38

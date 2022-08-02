@@ -5,7 +5,7 @@ c.NotebookApp.open_browser = False
 c.ServerApp.token = ''
 c.ServerApp.password = ''
 c.ServerApp.base_url=os.getenv('NB_PREFIX', '')
-
+c.ServerApp.root_dir = f"/home/{os.environ['NB_USER']}"
 c.FileContentsManager.delete_to_trash = False
 c.FileCheckpoints.checkpoint_dir = '/home/jovyan/checkpoints'
 
@@ -33,7 +33,7 @@ c.ServerProxy.servers['cloudbeaver'] = {
     }
 }
 c.ServerProxy.servers['dbt_docs'] = {
-    'command': ['echo'],
+    'command': ['dbt docs serve'],
     'port': 9328,
     'absolute_url': False,
     'timeout': 180,
