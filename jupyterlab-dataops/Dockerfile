@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=jupyter/base-notebook:python-3.8.8
+ARG BASE_IMAGE=gcr.io/deeplearning-platform-release/base-cpu:m88
 FROM $BASE_IMAGE
 
 USER root
