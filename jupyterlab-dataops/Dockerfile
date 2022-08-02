@@ -17,6 +17,7 @@ RUN code-server --install-extension ms-python.python \
 # dbeaver
 COPY --from=builder-dbeaver /opt/cloudbeaver/ /opt/cloudbeaver/
 COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
+RUN chmod +x /opt/cloudbeaver/run-server.sh 
 # requirements
 COPY requirements/ /opt/requirements/
 RUN pip install -r /opt/requirements/requirements.txt
