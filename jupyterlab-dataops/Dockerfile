@@ -8,13 +8,13 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # code server
-RUN curl -fsSL https://code-server.dev/install.sh | sh && \
-    rm -rf "${HOME}/.cache"
+ARG VSCODE_VERSION=4.5.1
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} && \
+    rm -rf "${HOME}/.cache" 
+RUN code-server --install-extension ms-python.python@2022.13.12141005 \
+    code-server --install-extension innoverio.vscode-dbt-power-user@0.6.2 \
+    code-server --install-extension bastienboutonnet.vscode-dbt@0.5.1
 COPY resources/vsc/settings.json "/home/jupyter/.local/share/code-server/User/settings.json"
-COPY resources/vsc/vsix/ /opt/vsix/
-RUN code-server --install-extension ms-python.python \
-    code-server --install-extension /opt/vsix/innoverio.vscode-dbt-power-user-0.5.9.vsix \
-    code-server --install-extension /opt/vsix/bastienboutonnet.vscode-dbt-0.5.1.vsix
 # dbeaver
 COPY --from=builder-dbeaver /opt/cloudbeaver/ /opt/cloudbeaver/
 COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
