@@ -1,2 +1,2 @@
-dbt-bigquery==1.0.0
+dbt-bigquery==1.1.1
 google-cloud-bigquery[bqstorage,pandas]==2.32.0

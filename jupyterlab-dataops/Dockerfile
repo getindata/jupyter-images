@@ -1,5 +1,6 @@
 FROM dbeaver/cloudbeaver:22.0.5 AS builder-dbeaver
-FROM gcr.io/deeplearning-platform-release/base-cpu:m88
+FROM gcr.io/deeplearning-platform-release/base-cpu:m88 as base
+
 RUN apt-get update && apt-get install -yq --no-install-recommends \
     curl \
     git \
@@ -18,10 +19,15 @@ RUN code-server --install-extension ms-python.python \
 COPY --from=builder-dbeaver /opt/cloudbeaver/ /opt/cloudbeaver/
 COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
 # requirements
-COPY requirements/ /opt/requirements/
+COPY requirements/requirements.txt /opt/requirements/
 RUN pip install -r /opt/requirements/requirements.txt
-
+# logos
 COPY resources/logos/ /opt/logos/
+# jupyter config
 COPY resources/jupyter/ /etc/jupyter/
-
+# Expose port for Vertex AI compatibility
 EXPOSE 8080
+
+FROM base as bigquery
+COPY requirements/requirements-bigquery.txt /opt/requirements/
+RUN pip install -r /opt/requirements/requirements-bigquery.txt
