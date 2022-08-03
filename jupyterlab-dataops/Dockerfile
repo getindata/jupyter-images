@@ -1,6 +1,8 @@
 FROM dbeaver/cloudbeaver:22.0.5 AS builder-dbeaver
 FROM gcr.io/deeplearning-platform-release/base-cpu:m88 as base
 
+ARG VSCODE_VERSION=4.5.1
+
 RUN apt-get update && apt-get install -yq --no-install-recommends \
     curl \
     git \
@@ -8,7 +10,6 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # code server
-ARG VSCODE_VERSION=4.5.1
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} && \
     rm -rf "${HOME}/.cache" 
 RUN code-server --install-extension ms-python.python@2022.13.12141005 \
