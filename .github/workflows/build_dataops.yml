@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        provider: ["bigquery"]
+        provider: [bigquery]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -40,8 +40,7 @@ jobs:
         with:
           context: jupyterlab-dataops
           builder: ${{ steps.buildx.outputs.name }}
-          build-args: |
-            PROVIDER=${{ matrix.provider }}
+          target: ${{ matrix.provider }}
           push: true
           tags: gcr.io/getindata-images-public/jupyterlab-dataops:${{ matrix.provider }}
           cache-from: type=local,src=/tmp/.buildx-cache
