@@ -11,7 +11,7 @@ c.ServerApp.notebook_dir = HOME_PATH
 
 # https://github.com/jupyter/notebook/issues/3130
 c.FileContentsManager.delete_to_trash = False
-c.FileCheckpoints.checkpoint_dir = '{HOME_PATH}/checkpoints'
+c.FileCheckpoints.checkpoint_dir = f'{HOME_PATH}/checkpoints'
 
 def _codeserver_command():
     full_path = shutil.which('code-server')
