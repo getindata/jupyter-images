@@ -30,7 +30,6 @@ try:
     assert proxy_url.endswith('notebooks.googleusercontent.com') # Proxy was set
     c.ServerApp.allow_origin_pat = 'https://' + proxy_url
     c.ServerApp.port = 8080
-    # c.ServerApp.root_dir = f"/home/{os.environ['NB_USER']}"
 except Exception: # not running on Vertex AI
     pass
 
