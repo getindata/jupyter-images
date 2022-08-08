@@ -2,6 +2,9 @@ FROM dbeaver/cloudbeaver:22.0.5 AS builder-dbeaver
 FROM gcr.io/deeplearning-platform-release/base-cpu:m88 as base
 
 ARG VSCODE_VERSION=4.5.1
+ARG VSCODE_PYTHON=2022.13.12141005
+ARG VSCODE_DBT_POWER_USER=0.6.2
+ARG VSCODE_DBT=0.5.1
 
 RUN apt-get update \
     && apt-get install -yq --no-install-recommends \
@@ -14,9 +17,9 @@ RUN apt-get update \
 # code server
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} && \
     rm -rf "${HOME}/.cache" 
-RUN code-server --install-extension ms-python.python@2022.13.12141005 \
-    code-server --install-extension innoverio.vscode-dbt-power-user@0.6.2 \
-    code-server --install-extension bastienboutonnet.vscode-dbt@0.5.1
+RUN code-server --install-extension ms-python.python@${VSCODE_PYTHON} \
+    code-server --install-extension innoverio.vscode-dbt-power-user@${VSCODE_DBT_POWER_USER} \
+    code-server --install-extension bastienboutonnet.vscode-dbt@${VSCODE_DBT}
 COPY resources/vsc/settings.json "/home/jupyter/.local/share/code-server/User/settings.json"
 
 # dbeaver
