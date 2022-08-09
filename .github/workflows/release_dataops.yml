@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        provider: ["bigquery"]
+        provider: [bigquery]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -49,8 +49,7 @@ jobs:
         with:
           context: ${{ steps.tag-info.outputs.IMAGE_NAME }}
           builder: ${{ steps.buildx.outputs.name }}
-          build-args: |
-            PROVIDER=${{ matrix.provider }}
+          target: ${{ matrix.provider }}
           push: true
           tags: gcr.io/getindata-images-public/${{ steps.tag-info.outputs.IMAGE_NAME }}:${{ matrix.provider }}-${{ steps.tag-info.outputs.IMAGE_VERSION }},gcr.io/getindata-images-public/${{ steps.tag-info.outputs.IMAGE_NAME }}:${{ matrix.provider }}-latest
           cache-from: type=local,src=/tmp/.buildx-cache
