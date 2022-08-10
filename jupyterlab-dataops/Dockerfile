@@ -20,7 +20,7 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_
 RUN code-server --install-extension ms-python.python@${VSCODE_PYTHON} \
     code-server --install-extension innoverio.vscode-dbt-power-user@${VSCODE_DBT_POWER_USER} \
     code-server --install-extension bastienboutonnet.vscode-dbt@${VSCODE_DBT}
-COPY resources/vsc/settings.json /root/.local/share/code-server/User/
+COPY resources/vsc/settings.json /root/.local/share/code-server/Machine/
 COPY resources/vsc/.bashrc root/
 
 # dbeaver
