@@ -2,5 +2,6 @@
   "files.associations": {
     "*.sql": "jinja-sql"
   },
-  "python.pythonPath": "/opt/conda/bin/python"
+  "python.defaultInterpreterPath": "/opt/conda/bin/python",
+  "terminal.integrated.gpuAcceleration": "off"
 }
