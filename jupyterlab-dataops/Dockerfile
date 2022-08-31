@@ -23,7 +23,8 @@ COPY resources/vsc/settings.json /root/.local/share/code-server/Machine/
 COPY resources/vsc/.bashrc root/
 
 # cloudbeaver
-COPY --from=gcr.io/getindata-images-public/cloudbeaver-dataops /opt/cloudbeaver/ /opt/cloudbeaver/
+COPY --from=gcr.io/getindata-images-public/cloudbeaver-dataops:0.1.0 /opt/cloudbeaver/ /opt/cloudbeaver/
+COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
 
 # requirements
 COPY requirements/requirements.txt /opt/requirements/
@@ -38,15 +39,9 @@ COPY resources/jupyter/ /etc/jupyter/
 # Expose port for Vertex AI compatibility
 EXPOSE 8080
 
-# use default cloudbeaver in non-bigquery target
-FROM base AS default
-COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
-
 FROM base as bigquery
 COPY requirements/requirements-bigquery.txt /opt/requirements/
 RUN pip install -r /opt/requirements/requirements-bigquery.txt
-COPY --from=gcr.io/getindata-images-public/cloudbeaver-dataops:0.1.0 /opt/cloudbeaver/ /opt/cloudbeaver/
-COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
 ADD resources/cloudbeaver/conf/initial-data-sources-bigquery.conf /opt/cloudbeaver/conf/initial-data-sources.conf
 COPY resources/cloudbeaver/set_metadata.py /opt/cloudbeaver/set_metadata.py
 COPY resources/cloudbeaver/set_metadata_run_jupyter.sh /set_metadata_run_jupyter.sh
