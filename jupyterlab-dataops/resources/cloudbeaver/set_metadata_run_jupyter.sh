@@ -1,0 +1,1 @@
+python /opt/cloudbeaver/set_metadata.py && /run_jupyter.sh
