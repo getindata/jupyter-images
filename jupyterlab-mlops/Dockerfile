@@ -6,11 +6,10 @@ ARG MLFLOW_VERSION
 ARG KEDRO_VERSION
 ARG VSCODE_VERSION
 ARG SPARK_SUPPORT
-ARG NB_USER=jupyter
 
-ENV NB_USER=$NB_USER
-ENV NB_UID=1000
-ENV NB_GID=100
+ENV NB_USER=azureuser
+ENV NB_UID=1001
+ENV NB_GID=1004
 ENV CONDA_DIR=/opt/conda
 ENV VSCODE_VERSION=$VSCODE_VERSION
 
@@ -47,6 +46,7 @@ RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/b
 # add group GID 1001 if not exists (for Vertex)
 RUN  if [ "$( grep 1001 /etc/group | wc -l)" -eq 0 ]; then groupadd -g 1001 jupyter-group; fi
 
+
 # allow passwordless sudo and add group required by kubeflow
 RUN echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
     groupadd -g 1337 nbusers
@@ -76,6 +76,16 @@ RUN if [ "$VSCODE_VERSION" != "NONE" ]; then \
     fi
 
 USER $NB_USER
+WORKDIR /home/$NB_USER
+ENV HOME=/home/$NB_USER
+ENV PATH=$PATH:/home/$NB_USER/.local/bin
+# Adding user to group that owns /opt
+RUN sudo usermod -a -G users $NB_USER
+# To be sure, changing ownership of old home
+RUN sudo chown -R $NB_USER:$NB_USER /home/jovyan
+# And moving all the files to new home
+RUN cp -r /home/jovyan /home/$NB_USER
+# That's partially because /home/jovyan is hardcoded in few parts of start scripts
 
 # install git extension
 RUN pip install --no-cache-dir jupyterlab-git
@@ -101,4 +111,5 @@ ENV MLFLOW_TRACKING_URI=http://localhost:5000
 ENV JUPYTER_ENABLE_LAB=yes
 
 # Expose port for Vertex AI compatibility
-EXPOSE 8080
+ EXPOSE 8080
+RUN sudo sed 's/jupyter lab/jupyter lab $NOTEBOOK_ARGS/g' /usr/local/bin/start-notebook.sh -i

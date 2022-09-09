@@ -23,6 +23,11 @@ jobs:
             vscode-version: 4.0.2
             tag-base: dev
             nb-user: jovyan
+          - base-image: "jupyter/pyspark-notebook:lab-3.2.1"
+            spark-support: true
+            vscode-version: 4.0.2
+            tag-base: azure
+            nb-user: azureuser
           - base-image: "gcr.io/deeplearning-platform-release/base-cpu:m88"
             spark-support: false
             vscode-version: 4.0.2
