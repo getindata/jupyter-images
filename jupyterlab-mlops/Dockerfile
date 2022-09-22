@@ -1,17 +1,19 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
-
 #inputs
-ARG MLFLOW_VERSION
-ARG KEDRO_VERSION
-ARG VSCODE_VERSION
-ARG SPARK_SUPPORT
-
-ENV NB_USER=azureuser
-ENV NB_UID=1001
-ENV NB_GID=1004
-ENV CONDA_DIR=/opt/conda
-ENV VSCODE_VERSION=$VSCODE_VERSION
+ARG MLFLOW_VERSION \
+    KEDRO_VERSION \
+    VSCODE_VERSION \
+    SPARK_SUPPORT \
+    USER=jupyter \
+    UID=1000 \
+    GID=100
+ 
+ENV NB_USER=$USER \ 
+    NB_UID=$UID \
+    NB_GID=$GID \
+    CONDA_DIR=/opt/conda \
+    VSCODE_VERSION=$VSCODE_VERSION
 
 USER root
 
@@ -38,21 +40,18 @@ RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
     fi
 
 # delete user jupyter,jovyan if exists
-RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 1 ]; then userdel $NB_USER; fi
-RUN  if [ "$( id jovyan 2>/dev/null | wc -l)" -eq 1 ]; then userdel jovyan; fi
-# add user $NB_USER if not exits
-RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/bash -u $NB_UID $NB_USER; fi
-
-# add group GID 1001 if not exists (for Vertex)
-RUN  if [ "$( grep 1001 /etc/group | wc -l)" -eq 0 ]; then groupadd -g 1001 jupyter-group; fi
-
-
-# allow passwordless sudo and add group required by kubeflow
-RUN echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
-    groupadd -g 1337 nbusers
+RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 1 ]; then userdel $NB_USER; fi; \
+     if [ "$( id jovyan 2>/dev/null | wc -l)" -eq 1 ]; then userdel jovyan; fi; \
+     echo  add user $NB_USER if not exits; \ 
+     if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/bash -u $NB_UID $NB_USER; fi; \
+     echo "add group GID 1001 if not exists (for Vertex)"; \
+     if [ "$( grep 1001 /etc/group | wc -l)" -eq 0 ]; then groupadd -g 1001 jupyter-group; fi; \
+     echo "allow passwordless sudo and add group required by kubeflow"; \
+     echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
+       groupadd -g 1337 nbusers
 
 #install mamba if not exists
-RUN if [ "$( which mamba | wc -l )" -eq 0 ]; then conda install mamba -n base -c conda-forge && chmod 777 -R /opt/conda/; fi
+RUN if [ "$( which mamba | wc -l )" -eq 0 ]; then conda install mamba -n base -c conda-forge; fi
 
 #copy fix-permissions
 COPY resources/jupyter/fix-permissions /usr/local/bin/fix-permissions
@@ -69,27 +68,29 @@ COPY resources/vscode/logo.svg /usr/local/share/vscode-logo.svg
 #vs code
 RUN if [ "$VSCODE_VERSION" != "NONE" ]; then \
       cd /opt/ && \
-      wget https://github.com/cdr/code-server/releases/download/v${VSCODE_VERSION}/code-server-${VSCODE_VERSION}-linux-amd64.tar.gz && \
+      wget -nv https://github.com/cdr/code-server/releases/download/v${VSCODE_VERSION}/code-server-${VSCODE_VERSION}-linux-amd64.tar.gz && \
       tar zxvf code-server-${VSCODE_VERSION}-linux-amd64.tar.gz && \
       ln -s /opt/code-server-${VSCODE_VERSION}-linux-amd64 /opt/code-server  && \
       rm -rf code-server-${VSCODE_VERSION}-linux-amd64.tar.gz ; \
     fi
 
+RUN sudo usermod -a -G users $NB_USER; \
+    if [ -d /home/jovyan ]; then cp -r /home/jovyan /home/$NB_USER; fi; \
+    if [ -d /home/jovyan ]; then chown -R $NB_UID:$NB_USER /home/jovyan; fi; \
+    chown -R $NB_USER:$NB_USER /home/$NB_USER
+
 USER $NB_USER
 WORKDIR /home/$NB_USER
-ENV HOME=/home/$NB_USER
-ENV PATH=$PATH:/home/$NB_USER/.local/bin
+ENV HOME=/home/$NB_USER \
+    PATH=$PATH:/home/$NB_USER/.local/bin
 # Adding user to group that owns /opt
-RUN sudo usermod -a -G users $NB_USER
-# To be sure, changing ownership of old home
-RUN sudo chown -R $NB_USER:$NB_USER /home/jovyan
-# And moving all the files to new home
-RUN cp -r /home/jovyan /home/$NB_USER
 # That's partially because /home/jovyan is hardcoded in few parts of start scripts
+# To be sure, changing ownership of old home
 
 # install git extension
 RUN pip install --no-cache-dir jupyterlab-git
 
+USER root
 # add kfp and install mlflow inside jupyterlab
 RUN mamba install --quiet --yes kfp jupyter-server-proxy -c conda-forge && \
     pip --no-cache-dir install mlflow==$MLFLOW_VERSION && \
@@ -98,9 +99,14 @@ RUN mamba install --quiet --yes kfp jupyter-server-proxy -c conda-forge && \
 # configure python 3.8 env with kedro
 RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python38" python=3.8 ipython ipykernel kedro=$KEDRO_VERSION && \
     mamba clean --all -f -y && \
-    "${CONDA_DIR}/envs/python38/bin/python" -m ipykernel install --user --name=python38 && \
-    fix-permissions "/home/${NB_USER}" && \
-    fix-permissions "${CONDA_DIR}"
+    "${CONDA_DIR}/envs/python38/bin/python" -m ipykernel install --user --name=python38
+
+RUN fix-permissions "/home/${NB_USER}" && \
+    fix-permissions "${CONDA_DIR}" && \
+    chown -R $NB_USER:$NB_USER $HOME && \
+    if [ -e /usr/local/bin/start-notebook.sh ]; then sed 's/jupyter lab/jupyter lab $NOTEBOOK_ARGS/g' /usr/local/bin/start-notebook.sh -i; fi
+RUN if [ -d /otp/jupyter ]; then chown -R $NB_USER:$NB_USER /opt/jupyter; fi
+USER $NB_USER
 # above kernel installation makes sense in case of ephemeral KF notebooks (no home remounting)
 
 COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
@@ -112,4 +118,3 @@ ENV JUPYTER_ENABLE_LAB=yes
 
 # Expose port for Vertex AI compatibility
  EXPOSE 8080
-RUN sudo sed 's/jupyter lab/jupyter lab $NOTEBOOK_ARGS/g' /usr/local/bin/start-notebook.sh -i
