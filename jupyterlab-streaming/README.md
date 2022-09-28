@@ -1,12 +1,10 @@
-# Base Jupyter Notebook Stack
+# Base Jupyter Notebook Stack for Streaming
 
-[![docker pulls](https://img.shields.io/docker/pulls/jupyter/base-notebook.svg)](https://hub.docker.com/r/jupyter/base-notebook/)
-[![docker stars](https://img.shields.io/docker/stars/jupyter/base-notebook.svg)](https://hub.docker.com/r/jupyter/base-notebook/)
-[![image size](https://img.shields.io/docker/image-size/jupyter/base-notebook/latest)](https://hub.docker.com/r/jupyter/base-notebook/ "jupyter/base-notebook image size")
+This is a copy of [base-notebook](https://github.com/jupyter/docker-stacks/tree/main/base-notebook) jupyter image.
 
-GitHub Actions in the <https://github.com/jupyter/docker-stacks> project builds and pushes this image to Docker Hub.
+For Apache Flink (v 1.15) needs - Python 3.8 must be installed inside Jupyter notebook container, additionally, due to number of existing vulnerabilities in official (old) [docker image](https://hub.docker.com/layers/jupyter/base-notebook/python-3.8.8/images/sha256-d832504205f10b2267543335eb5bc8b1079fb916a712687a698962bed873c17d?context=explore), custom base-notebook image has to be maintained and published.
 
-Please visit the project documentation site for help to use and contribute to this image and others.
+Changes to between upstream and current version:
 
-- [Jupyter Docker Stacks on ReadTheDocs](https://jupyter-docker-stacks.readthedocs.io/en/latest/index.html)
-- [Selecting an Image :: Core Stacks :: jupyter/base-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-base-notebook)
+* Python 3.8
+* Ubuntu 20.04 as base image

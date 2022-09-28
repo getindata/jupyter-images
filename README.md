@@ -39,6 +39,14 @@ image with additional setup:
 * local [CloudBeaver](https://github.com/dbeaver/cloudbeaver) as SQL editor accessed from the browser
 * [dbt](https://docs.getdbt.com/) CLI
 
+## jupyterlab-streaming
+
+Based on the [jupyter/base-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-base-notebook)
+image with additional setup:
+
+* conda-backed python 3.8.x environment
+* Ubuntu 20.04 as base image
+
 Compatibility:
 
 - [x] [JupyterHub](https://jupyter.org/hub)
