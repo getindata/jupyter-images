@@ -8,6 +8,16 @@ Latest versions:
 gcr.io/getindata-images-public/jupyterlab-mlops:dev-0.2.9
 ```
 
+## jupyterlab-base
+
+Local copy of [jupyter/base-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-base-notebook), 
+used to build and manage local versions of `base-notebook` image that are no longer published in offical repositories:
+
+### jupyterlab-base:ubuntu-20.04.python-3.8
+
+* conda-backed python 3.8.x environment
+* Ubuntu 20.04 as base image
+
 ## jupyterlab-mlops
 
 Based on the [jupyter/pyspark-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-pyspark-notebook)
