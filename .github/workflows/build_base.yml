@@ -1,12 +1,12 @@
-name: Build jupyterlab-streaming Image
+name: Build jupyterlab-base Image
 on:
   pull_request:
     paths:
-      - "jupyterlab-streaming/**"
-      - ".github/workflows/build_streaming.yml"
+      - "jupyterlab-base/**"
+      - ".github/workflows/build_base.yml"
   push:
     tags:
-      - "jupyterlab-streaming-*.*.*"
+      - "jupyterlab-base-*.*.*"
 
 jobs:
   buildx-streaming:
@@ -16,13 +16,13 @@ jobs:
         include:
           - base-image: "ubuntu:20.04"
             python-version: 3.8
-            tag-base: base
+            tag-base: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - uses: docker/setup-buildx-action@v1
-        id: buildx-streaming
+        id: buildx-base
         with:
           install: true
 
@@ -49,13 +49,13 @@ jobs:
           IMAGE_VERSION=`echo $TAG_NAME | sed -e's/\(.*\)-\([[:digit:]]\+\.[[:digit:]]\+\.[[:digit:]]\)\+/\2/'`
           echo "::set-output name=IMAGE_VERSION::$IMAGE_VERSION"
 
-      - name: Build jupyterlab-streaming
+      - name: Build jupyterlab-base
         uses: docker/build-push-action@v2
         with:
-          context: jupyterlab-streaming
+          context: jupyterlab-base
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          tags: gcr.io/getindata-images-public/jupyterlab-streaming:${{ matrix.tag-base }}-${{ github.sha }},gcr.io/getindata-images-public/jupyterlab-streaming:${{ matrix.tag-base }}-${{ steps.tag-info.outputs.IMAGE_VERSION || 'latest' }},gcr.io/getindata-images-public/jupyterlab-streaming:${{ matrix.tag-base }}-python{{ matrix.python-version }}
+          tags: gcr.io/getindata-images-public/jupyterlab-base:${{ matrix.tag-base }}-python{{ matrix.python-version }}-${{ steps.tag-info.outputs.IMAGE_VERSION || 'latest' }},gcr.io/getindata-images-public/jupyterlab-base:${{ matrix.tag-base }}-python{{ matrix.python-version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build-args: |
