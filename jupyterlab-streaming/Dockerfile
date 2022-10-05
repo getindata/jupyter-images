@@ -1,6 +1,6 @@
 FROM gcr.io/getindata-images-public/jupyterlab-base:ubuntu-20.04.python-3.8
 ARG STREAMING_CLI_VERSION=1.6.0
-ARG MAGIC_VERSION=0.6.2
+ARG MAGIC_VERSION=0.8.0
 ENV TZ=Etc/UTC
 ENV MAVEN_CLI_OPTS="--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
 ENV FLINK_HOME="/opt/conda/lib/python3.8/site-packages/pyflink"
@@ -14,8 +14,10 @@ RUN echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
 
 # logos
 COPY resources/logos/ /opt/logos/
+
 # jupyter config
-COPY resources/jupyter/ /etc/jupyter/
+COPY resources/jupyter /var/tmp/jupyter/
+RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
 
 RUN sudo apt update -y && \
     sudo apt-get install -y git maven openjdk-11-jdk && \
