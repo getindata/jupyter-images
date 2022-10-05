@@ -54,6 +54,21 @@ Compatibility:
 - [x] [JupyterHub](https://jupyter.org/hub)
 - [x] [Vertex AI Notebooks](https://cloud.google.com/vertex-ai/docs/general/notebooks)
 
+## jupyterlab-streaming
+
+Based on the [jupyter/base-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-base-notebook)
+image with additional setup:
+
+* conda-backed python 3.8.8 environment
+* [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
+* [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
+* [streaming-jupyter-integrations](https://github.com/getindata/streaming-jupyter-integrations) Jupyter magics for interactively running _Flink SQL_ jobs
+* [streamingcli](https://github.com/getindata/streaming-cli) tool
+
+Compatibility:
+
+- [x] [JupyterHub](https://jupyter.org/hub)
+
 #### How to use this image?
 
 In Kubeflow Notebooks select *Custom Image* checkbox and enter image location:
