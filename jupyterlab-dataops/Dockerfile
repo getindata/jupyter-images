@@ -42,7 +42,7 @@ EXPOSE 8080
 FROM base as bigquery
 COPY requirements/requirements-bigquery.txt /opt/requirements/
 RUN pip install -r /opt/requirements/requirements-bigquery.txt
-ADD resources/cloudbeaver/conf/initial-data-sources-bigquery.conf /opt/cloudbeaver/conf/initial-data-sources.conf
+ADD resources/cloudbeaver/conf/initial-data-sources-bigquery.conf.j2 /opt/cloudbeaver/conf/initial-data-sources.conf.j2
 COPY resources/cloudbeaver/set_metadata.py /opt/cloudbeaver/set_metadata.py
 COPY resources/cloudbeaver/set_metadata_run_jupyter.sh /set_metadata_run_jupyter.sh
 RUN chmod +x /set_metadata_run_jupyter.sh

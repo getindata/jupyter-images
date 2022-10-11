@@ -11,10 +11,11 @@
 			"configuration": {
 				"host": "https://www.googleapis.com/bigquery/v2",
 				"port": "443",
+				"database": "{{ project_id }}",
 				"url": "jdbc:bigquery://https://www.googleapis.com/bigquery/v2:443",
 				"type": "dev",
 				"properties": {
-					"OAuthPvtKeyPath": "/home/jupyter/gcp-service-account-key.json"
+					"OAuthType": "3"
 				},
 				"auth-model": "native",
 				"user": "donotchange"
