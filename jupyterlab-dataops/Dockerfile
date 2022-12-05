@@ -59,6 +59,7 @@ FROM gcr.io/getindata-images-public/jupyterlab-base:ubuntu-20.04.python-3.8 as j
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
+ENV TZ=Etc/UTC
 
 USER root
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -82,7 +83,7 @@ RUN pip install --no-cache-dir \
     jupyterlab-git \
     jupyterlab-lsp \
     jupyter-server-proxy
-RUN pip install --no-cache-dir data-pipelines-cli[docker,datahub,s3,gcs,snowflake,bigquery,postgres,redshift]==${DP_CLI_VERSION}
+RUN pip install --no-cache-dir data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION}
 
 # code server
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} && \
