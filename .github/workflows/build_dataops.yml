@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        provider: [gcp, jupyterhub]
+        platform: [gcp, jupyterhub]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -40,9 +40,9 @@ jobs:
         with:
           context: jupyterlab-dataops
           builder: ${{ steps.buildx.outputs.name }}
-          target: ${{ matrix.provider }}
+          target: ${{ matrix.platform }}
           push: true
-          tags: gcr.io/getindata-images-public/jupyterlab-dataops:${{ matrix.provider }}
+          tags: gcr.io/getindata-images-public/jupyterlab-dataops:${{ matrix.platform }}-${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 

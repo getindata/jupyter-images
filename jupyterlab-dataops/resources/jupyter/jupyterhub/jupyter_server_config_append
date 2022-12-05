@@ -12,7 +12,7 @@ c.ServerProxy.servers = {
     'port': 7000,
     'absolute_url': False,
     'new_browser_tab': False,
-    'timeout': 45,
+    'timeout': 180,
     'launcher_entry': {
         'title': "VSCode",
         'icon_path': '/opt/logos/vs-code.svg',
