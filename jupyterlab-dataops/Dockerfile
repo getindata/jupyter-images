@@ -55,16 +55,23 @@ RUN chmod +x /set_metadata_run_jupyter.sh
 CMD ["/set_metadata_run_jupyter.sh"]
 
 # Jupyterhub version
-FROM gcr.io/getindata-images-public/jupyterlab-base:ubuntu-20.04.python-3.8 as jupyterhub
+FROM jupyter/minimal-notebook:python-3.8.13 as jupyterhub
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
-ENV TZ=Etc/UTC
 
 USER root
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
     groupadd -g 1337 nbusers
+
+RUN apt-get update \
+    && apt-get install -yq --no-install-recommends \
+    curl \
+    git \
+    g++ \
+    openjdk-11-jdk \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # logos
 COPY resources/logos/ /opt/logos/
@@ -73,11 +80,8 @@ COPY resources/logos/ /opt/logos/
 COPY resources/jupyter/jupyterhub/ /var/tmp/jupyter/
 RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
 
-RUN sudo apt update -y && \
-    sudo apt-get install -y git curl && \
-    rm -rf /var/lib/apt/lists/*
+USER ${NB_UID}
 
-USER jovyan
 RUN pip install --no-cache-dir \
     jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
     jupyterlab-git \
