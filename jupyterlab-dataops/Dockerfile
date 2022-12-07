@@ -89,15 +89,24 @@ RUN pip install --no-cache-dir \
     jupyter-server-proxy
 RUN pip install --no-cache-dir data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION}
 
-# code server
-RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} && \
-    rm -rf "${HOME}/.cache"
-RUN code-server --install-extension ms-python.python \
-    code-server --install-extension innoverio.vscode-dbt-power-user \
-    code-server --install-extension koszti.snowflake-driver-for-sqltools
+# # code server
+# RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} && \
+#     rm -rf "${HOME}/.cache"
+# RUN code-server --install-extension ms-python.python \
+#     code-server --install-extension innoverio.vscode-dbt-power-user \
+#     code-server --install-extension koszti.snowflake-driver-for-sqltools
 
-# snowsql
-RUN curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash && \
+# # snowsql
+# RUN curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash && \
+#     SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=/home/jovyan/.bashrc bash snowsql-1.2.24-linux_x86_64.bash && \
+#     rm -f snowsql-1.2.24-linux_x86_64.bash
+COPY resources/snowsql/config /var/tmp/snowsql/
+CMD curl -fsSL https://code-server.dev/install.sh | sh -s -- --version 4.5.1 && \
+    code-server --install-extension ms-python.python \
+    code-server --install-extension innoverio.vscode-dbt-power-user \
+    code-server --install-extension koszti.snowflake-driver-for-sqltools && \
+    curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash && \
     SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=/home/jovyan/.bashrc bash snowsql-1.2.24-linux_x86_64.bash && \
-    rm -f snowsql-1.2.24-linux_x86_64.bash
-COPY resources/snowsql/config /home/jovyan/.snowsql
+    rm -f snowsql-1.2.24-linux_x86_64.bash && \
+    cp /var/tmp/snowsql/config /home/jovyan/.snowsql && \
+    start-notebook.sh
