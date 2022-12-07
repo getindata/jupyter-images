@@ -1,0 +1,17 @@
+[connections]
+accountname = changeme
+username = changeme
+dbname = changeme
+schemaname = changeme
+warehousename = changeme
+password = changeme
+
+[options]
+auto_completion = True
+variable_substitution = True
+exit_on_error = True
+log_file = ~/.snowsql/log
+log_level = CRITICAL
+timing = True
+output_format = psql
+key_bindings = emacs

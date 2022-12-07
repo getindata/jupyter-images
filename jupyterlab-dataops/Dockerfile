@@ -80,7 +80,7 @@ COPY resources/logos/ /opt/logos/
 COPY resources/jupyter/jupyterhub/ /var/tmp/jupyter/
 RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
 
-USER ${NB_UID}
+USER jovyan
 
 RUN pip install --no-cache-dir \
     jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
@@ -95,3 +95,9 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_
 RUN code-server --install-extension ms-python.python \
     code-server --install-extension innoverio.vscode-dbt-power-user \
     code-server --install-extension koszti.snowflake-driver-for-sqltools
+
+# snowsql
+RUN curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash && \
+    SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=/home/jovyan/.bashrc bash snowsql-1.2.24-linux_x86_64.bash && \
+    rm -f snowsql-1.2.24-linux_x86_64.bash
+COPY resources/snowsql/config /home/jovyan/.snowsql
