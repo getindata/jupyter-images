@@ -92,16 +92,19 @@ RUN pip install --no-cache-dir data-pipelines-cli[docker,datahub,s3,snowflake]==
 # code server
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} && \
     rm -rf "${HOME}/.cache"
-RUN code-server --install-extension ms-python.python \
-    code-server --install-extension innoverio.vscode-dbt-power-user \
-    code-server --install-extension koszti.snowflake-driver-for-sqltools
+# RUN code-server --install-extension ms-python.python \
+#     code-server --install-extension innoverio.vscode-dbt-power-user \
+#     code-server --install-extension koszti.snowflake-driver-for-sqltools
 
 # snowsql
 RUN curl -o /var/tmp/snowsql-1.2.24-linux_x86_64.bash https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash
 COPY resources/snowsql/config /var/tmp
 COPY resources/vsc/jupyterhub/.bashrc /var/tmp
+COPY resources/vsc/addons/ /var/tmp/addons
+
 
 CMD cp /var/tmp/.bashrc /home/jovyan/ && \
     SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=/home/jovyan/.bashrc bash /var/tmp/snowsql-1.2.24-linux_x86_64.bash && \
     cp /var/tmp/config /home/jovyan/.snowsql && \
+    code-server --install-extension /var/tmp/addons/innoverio.vscode-dbt-power-user-0.10.1.vsix && \
     start-notebook.sh
