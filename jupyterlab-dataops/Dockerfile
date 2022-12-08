@@ -55,7 +55,7 @@ RUN chmod +x /set_metadata_run_jupyter.sh
 CMD ["/set_metadata_run_jupyter.sh"]
 
 # Jupyterhub version
-FROM --platform=linux/amd64 jupyter/minimal-notebook:python-3.8.13 as jupyterhub
+FROM jupyter/minimal-notebook:python-3.8.13 as jupyterhub
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
@@ -80,9 +80,9 @@ COPY resources/logos/ /opt/logos/
 COPY resources/jupyter/jupyterhub/ /var/tmp/jupyter/
 RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
 
-
 RUN curl -o /usr/bin/snowsql-1.2.24-linux_x86_64.bash https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash && \
-    chmod a+x /usr/bin/snowsql-1.2.24-linux_x86_64.bash
+    chmod a+x /usr/bin
+
 
 USER jovyan
 
@@ -101,14 +101,12 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_
 
 # snowsql
 
-# COPY resources/snowsql/config /var/tmp
+COPY resources/snowsql/config /var/tmp
 # COPY resources/vsc/jupyterhub/.bashrc /var/tmp
 # COPY resources/vsc/addons/ /var/tmp/addons
 
 
-CMD SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
-    code-server --install-extension ms-python.python \
-    code-server --install-extension innoverio.vscode-dbt-power-user \
-    code-server --install-extension koszti.snowflake-driver-for-sqltools && \
+CMD SNOWSQL_DOWNLOAD_DIR=/usr/bin SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
+    cp /var/tmp/config /home/jovyan/.snowsql/ && \
     start-notebook.sh
 
