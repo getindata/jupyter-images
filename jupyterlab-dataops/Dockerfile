@@ -83,7 +83,6 @@ RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_se
 RUN curl -o /usr/bin/snowsql-1.2.24-linux_x86_64.bash https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash && \
     chmod a+x /usr/bin
 
-
 USER jovyan
 
 RUN pip install --no-cache-dir \
@@ -91,7 +90,7 @@ RUN pip install --no-cache-dir \
     jupyterlab-git \
     jupyterlab-lsp \
     jupyter-server-proxy
-# RUN pip install --no-cache-dir data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION}
+RUN pip install --no-cache-dir data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION}
 
 # code server
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION}
@@ -99,16 +98,10 @@ RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-pytho
     code-server --extensions-dir /var/tmp/extension --install-extension innoverio.vscode-dbt-power-user \
     code-server --extensions-dir /var/tmp/extension --install-extension koszti.snowflake-driver-for-sqltools
 
-
-
 # snowsql
-
 COPY resources/snowsql/config /var/tmp
-COPY resources/vsc/jupyterhub/.bashrc /var/tmp
-# COPY resources/vsc/addons/ /var/tmp/addons
 
-
-CMD SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
+CMD SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=~/.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
     cp /var/tmp/config /home/jovyan/.snowsql/ && \
-    echo "alias snowsql=/home/jovyan/bin/snowsql" >> ~/.bashrc && \
+    echo "alias snowsql=/var/tmp/bin/snowsql" >> ~/.bashrc && \
     start-notebook.sh
