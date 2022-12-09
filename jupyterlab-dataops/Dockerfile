@@ -55,7 +55,7 @@ RUN chmod +x /set_metadata_run_jupyter.sh
 CMD ["/set_metadata_run_jupyter.sh"]
 
 # Jupyterhub version
-FROM --platform=linux/amd64 jupyter/minimal-notebook:python-3.8.13 as jupyterhub
+FROM jupyter/minimal-notebook:python-3.8.13 as jupyterhub
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
@@ -91,7 +91,7 @@ RUN pip install --no-cache-dir \
     jupyterlab-git \
     jupyterlab-lsp \
     jupyter-server-proxy
-RUN pip install --no-cache-dir data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION}
+# RUN pip install --no-cache-dir data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION}
 
 # code server
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION}
@@ -106,7 +106,7 @@ COPY resources/vsc/jupyterhub/.bashrc /var/tmp
 # COPY resources/vsc/addons/ /var/tmp/addons
 
 
-CMD SNOWSQL_DOWNLOAD_DIR=~/bin SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
+CMD SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
     cp /var/tmp/config /home/jovyan/.snowsql/ && \
+    alias snowsql=/home/jovyan/bin/snowsql && \
     start-notebook.sh
-
