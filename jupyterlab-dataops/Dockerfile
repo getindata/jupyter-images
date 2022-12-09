@@ -103,5 +103,5 @@ COPY resources/snowsql/config /var/tmp
 
 CMD SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=~/.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
     cp /var/tmp/config /home/jovyan/.snowsql/ && \
-    echo "alias snowsql=/var/tmp/bin/snowsql" >> ~/.bashrc && \
+    echo 'alias snowsql="/var/tmp/bin/snowsql"' >> ~/.bashrc && \
     start-notebook.sh
