@@ -55,7 +55,7 @@ RUN chmod +x /set_metadata_run_jupyter.sh
 CMD ["/set_metadata_run_jupyter.sh"]
 
 # Jupyterhub version
-FROM --platform=linux/amd64 jupyter/minimal-notebook:python-3.8.13 as jupyterhub
+FROM jupyter/minimal-notebook:python-3.8.13 as jupyterhub
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
@@ -100,8 +100,9 @@ RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-pytho
 
 # snowsql
 COPY resources/snowsql/config /var/tmp
+COPY resources/vsc/jupyterhub/.bashrc /var/tmp
 
-CMD SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=~/.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
+CMD cp /var/tmp/.bashrc /home/jovyan/ && \
+    SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=~/.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
     cp /var/tmp/config /home/jovyan/.snowsql/ && \
-    echo 'alias snowsql="/var/tmp/bin/snowsql"' >> ~/.bashrc && \
     start-notebook.sh

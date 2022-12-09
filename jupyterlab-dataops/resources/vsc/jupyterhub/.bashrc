@@ -116,3 +116,5 @@ if ! shopt -oq posix; then
   fi
 fi
 eval "$(command conda shell.bash hook 2> /dev/null)"
+
+alias snowsql="/var/tmp/bin/snowsql"
