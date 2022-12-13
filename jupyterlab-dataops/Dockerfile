@@ -103,5 +103,5 @@ RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-pytho
 
 # snowsql
 COPY resources/snowsql/config /var/tmp
-CMD cp -f /var/tmp/config /home/jovyan/.snowsql/ && \
+CMD cp /var/tmp/config /home/jovyan/.snowsql/ && \
     start-notebook.sh
