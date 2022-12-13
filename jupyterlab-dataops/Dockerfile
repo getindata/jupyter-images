@@ -55,7 +55,7 @@ RUN chmod +x /set_metadata_run_jupyter.sh
 CMD ["/set_metadata_run_jupyter.sh"]
 
 # Jupyterhub version
-FROM jupyter/minimal-notebook:python-3.8.13 as jupyterhub
+FROM --platform=linux/amd64 jupyter/minimal-notebook:python-3.8.13 as jupyterhub
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
@@ -83,7 +83,6 @@ RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_se
 RUN curl -o /usr/bin/snowsql-1.2.24-linux_x86_64.bash https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash && \
     chmod a+x /usr/bin
 RUN SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=/etc/bash.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash
-COPY resources/snowsql/config /home/jovyan/.snowsql/config
 
 USER jovyan
 
@@ -100,3 +99,9 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_
 RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-python.python \
     code-server --extensions-dir /var/tmp/extension --install-extension innoverio.vscode-dbt-power-user \
     code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/snowflake.snowflake-vsc-0.5.1.vsix
+
+
+# snowsql
+COPY resources/snowsql/config /var/tmp
+CMD cp -f /var/tmp/config /home/jovyan/.snowsql/ && \
+    start-notebook.sh
