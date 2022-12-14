@@ -101,7 +101,12 @@ RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-pytho
     code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/snowflake.snowflake-vsc-0.5.1.vsix
 
 
-# snowsql
+# # snowsql
+# RUN snowsql -v
 COPY resources/snowsql/config /var/tmp
-CMD cp /var/tmp/config /home/jovyan/.snowsql/ && \
+CMD /var/tmp/bin/snowsql -v && \
+    cp -f /var/tmp/config /home/jovyan/.snowsql/ && \
     start-notebook.sh
+
+# CMD ls /home/jovyan/.snowsql/ && \
+#     start-notebook.sh
