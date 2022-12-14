@@ -99,14 +99,3 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_
 RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-python.python \
     code-server --extensions-dir /var/tmp/extension --install-extension innoverio.vscode-dbt-power-user \
     code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/snowflake.snowflake-vsc-0.5.1.vsix
-
-
-# # snowsql
-# RUN snowsql -v
-COPY resources/snowsql/config /var/tmp
-CMD /var/tmp/bin/snowsql -v && \
-    cp -f /var/tmp/config /home/jovyan/.snowsql/ && \
-    start-notebook.sh
-
-# CMD ls /home/jovyan/.snowsql/ && \
-#     start-notebook.sh
