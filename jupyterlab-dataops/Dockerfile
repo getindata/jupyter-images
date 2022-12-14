@@ -84,7 +84,7 @@ RUN curl -o /usr/bin/snowsql-1.2.24-linux_x86_64.bash https://sfc-repo.snowflake
     chmod a+x /usr/bin
 RUN SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=/etc/bash.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash
 
-RUN chown -R jovyan:nbusers $HOME
+RUN chown -R jovyan:users $HOME
 USER jovyan
 
 RUN pip install --no-cache-dir \
