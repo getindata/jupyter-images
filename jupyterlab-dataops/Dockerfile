@@ -82,8 +82,7 @@ RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_se
 
 RUN curl -o /usr/bin/snowsql-1.2.24-linux_x86_64.bash https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash && \
     chmod a+x /usr/bin
-RUN SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=/etc/bash.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash && \
-    chmod a+x /usr/bin
+RUN SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=/etc/bash.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash
 
 USER jovyan
 
