@@ -100,4 +100,11 @@ RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-pytho
     code-server --extensions-dir /var/tmp/extension --install-extension innoverio.vscode-dbt-power-user \
     code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/snowflake.snowflake-vsc-0.5.1.vsix
 
-#test
+
+# # snowsql
+# RUN snowsql -v
+COPY resources/snowsql/config /var/tmp
+CMD /var/tmp/bin/snowsql -v && \
+    cp -f /var/tmp/config /home/jovyan/.snowsql/ && \
+    start-notebook.sh
+

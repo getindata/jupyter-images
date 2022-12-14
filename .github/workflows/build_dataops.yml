@@ -42,7 +42,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           target: ${{ matrix.platform }}
           push: true
-          tags: gcr.io/getindata-images-public/jupyterlab-dataops:${{ matrix.platform }}-${{ github.sha }}
+          tags: gcr.io/getindata-images-public/jupyterlab-dataops:${{ matrix.platform }}-${{ github.event.pull_request.head.sha }}
           # cache-from: type=local,src=/tmp/.buildx-cache
           # cache-to: type=local,dest=/tmp/.buildx-cache-new
 
