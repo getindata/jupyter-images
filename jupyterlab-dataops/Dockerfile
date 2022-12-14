@@ -84,6 +84,7 @@ RUN curl -o /usr/bin/snowsql-1.2.24-linux_x86_64.bash https://sfc-repo.snowflake
     chmod a+x /usr/bin
 RUN SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=/etc/bash.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash
 
+RUN chown -R jovyan:nbusers $HOME
 USER jovyan
 
 RUN pip install --no-cache-dir \
@@ -99,3 +100,10 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_
 RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-python.python \
     code-server --extensions-dir /var/tmp/extension --install-extension innoverio.vscode-dbt-power-user \
     code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/snowflake.snowflake-vsc-0.5.1.vsix
+
+
+COPY resources/snowsql/config /var/tmp
+CMD /var/tmp/bin/snowsql -v && \
+    cp -f /var/tmp/config $HOME/.snowsql/ && \
+    start-notebook.sh
+
