@@ -73,20 +73,25 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Copies your code file  repository to the filesystem
+COPY entrypoint.sh /entrypoint.sh
+# change permission to execute the script and
+RUN chmod +x /entrypoint.sh
 # logos
 COPY resources/logos/ /opt/logos/
-
+# copy snowsql config jupyter config and addons for code server
+COPY resources/snowsql/config resources/jupyter/ resources/vsc/addons/snowflake.snowflake-vsc-0.5.1.vsix /var/tmp/
 # jupyter config
-COPY resources/jupyter/jupyterhub/ /var/tmp/jupyter/
-RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
-
+RUN cat /var/tmp/jupyterhub/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
+# download snowsql binaries
 RUN curl -o /usr/bin/snowsql-1.2.24-linux_x86_64.bash https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.24-linux_x86_64.bash && \
     chmod a+x /usr/bin
+# initialize snosql binariers
 RUN SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=/etc/bash.bashrc bash /usr/bin/snowsql-1.2.24-linux_x86_64.bash
 
 RUN chown -R jovyan:users $HOME
 USER jovyan
-
+# install python packages
 RUN pip install --no-cache-dir \
     jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
     jupyterlab-git \
@@ -94,14 +99,10 @@ RUN pip install --no-cache-dir \
     jupyter-server-proxy
 RUN pip install --no-cache-dir data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION}
 
-# code server
-COPY resources/vsc/addons/snowflake.snowflake-vsc-0.5.1.vsix /var/tmp
+# install code server and addons
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION}
 RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-python.python \
     code-server --extensions-dir /var/tmp/extension --install-extension innoverio.vscode-dbt-power-user \
     code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/snowflake.snowflake-vsc-0.5.1.vsix
 
-COPY resources/snowsql/config /var/tmp
-CMD mkdir -p /home/jovyan/.snowsql && cp /var/tmp/config /home/jovyan/.snowsql/config && chown jovyan:users -R /home/jovyan/.snowsql && \
-    start-notebook.sh
-
+ENTRYPOINT [ "/entrypoint.sh" ]
