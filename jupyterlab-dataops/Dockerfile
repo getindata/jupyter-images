@@ -74,7 +74,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Copies your code file  repository to the filesystem
-COPY entrypoint.sh /entrypoint.sh
+COPY resources/snowsql/entrypoint.sh /entrypoint.sh
 # change permission to execute the script and
 RUN chmod +x /entrypoint.sh
 # logos
