@@ -20,13 +20,6 @@
 #proxy_host = defaultproxyhost
 #proxy_port = defaultproxyport
 
-[connections.example]
-#Can be used in SnowSql as #connect example
-
-accountname = accountname
-username = username
-password = password1234
-
 [variables]
 # SnowSQL defines the variables in this section on startup.
 # You can use these variables in SQL statements. For details, see
