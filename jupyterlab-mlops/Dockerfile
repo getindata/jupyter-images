@@ -110,6 +110,7 @@ USER $NB_USER
 # above kernel installation makes sense in case of ephemeral KF notebooks (no home remounting)
 
 COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
+COPY kedro_icon_no-type_whitebg.svg /usr/local/share/kedro-logo.svg
 
 ENV PATH "${PATH}:${CONDA_DIR}/envs/python38/bin"
 ENV CONDA_DEFAULT_ENV python38
