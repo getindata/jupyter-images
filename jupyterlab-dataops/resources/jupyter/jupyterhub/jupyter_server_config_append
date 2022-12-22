@@ -1,4 +1,5 @@
 import shutil
+import os
 def _codeserver_command():
     full_path = shutil.which('code-server')
     if not full_path:

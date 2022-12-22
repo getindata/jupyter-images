@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+      "*.sql": "jinja-sql"
+    },
+    "terminal.integrated.gpuAcceleration": "off",
+    "[jinja-sql]": {
+        "editor.defaultFormatter": "innoverio.vscode-dbt-power-user",
+        "editor.formatOnSave": true
+      },
+    "python.defaultInterpreterPath": "/opt/conda/bin/python",
+  }
