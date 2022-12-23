@@ -79,8 +79,8 @@ COPY resources/snowsql/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 # logos
 COPY resources/logos/ /opt/logos/
-# copy snowsql config jupyter config and addons for code server
-COPY resources/snowsql/config resources/jupyter/ resources/vsc/addons/ /var/tmp/
+# copy snowsql config jupyter config, addons and settings.json for code server
+COPY resources/snowsql/config resources/jupyter/ resources/vsc/addons/ resources/vsc/jupyterhub/settings.json /var/tmp/
 # add additional config
 RUN cat /var/tmp/jupyterhub/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
 # download snowsql binaries
@@ -102,7 +102,6 @@ RUN pip install --no-cache-dir \
 
 # install code server and addons
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION}
-COPY resources/vsc/jupyterhub/settings.json /root/.local/share/code-server/Machine/
 RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-python.python \
     code-server --extensions-dir /var/tmp/extension --install-extension innoverio.vscode-dbt-power-user \
     code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/snowflake.snowflake-vsc-0.5.2.vsix \
