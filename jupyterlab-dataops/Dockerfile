@@ -1,4 +1,4 @@
-ARG VSCODE_VERSION=4.5.1
+ARG VSCODE_VERSION=4.9.1
 ARG VSCODE_PYTHON=2022.13.12141005
 ARG VSCODE_DBT_POWER_USER=0.6.2
 ARG VSCODE_DBT=0.5.1
@@ -79,8 +79,8 @@ COPY resources/snowsql/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 # logos
 COPY resources/logos/ /opt/logos/
-# copy snowsql config jupyter config and addons for code server
-COPY resources/snowsql/config resources/jupyter/ resources/vsc/addons/snowflake.snowflake-vsc-0.5.1.vsix /var/tmp/
+# copy snowsql config jupyter config, addons and settings.json for code server
+COPY resources/snowsql/config resources/jupyter/ resources/vsc/addons/ resources/vsc/jupyterhub/settings.json resources/vsc/.bashrc  /var/tmp/
 # add additional config
 RUN cat /var/tmp/jupyterhub/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
 # download snowsql binaries
@@ -97,12 +97,14 @@ RUN pip install --no-cache-dir \
     jupyterlab-git \
     jupyterlab-lsp \
     jupyter-server-proxy \
-    data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION}
+    data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
+    sqlfluff==1.4.5
 
 # install code server and addons
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION}
 RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-python.python \
     code-server --extensions-dir /var/tmp/extension --install-extension innoverio.vscode-dbt-power-user \
-    code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/snowflake.snowflake-vsc-0.5.1.vsix
+    code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/snowflake.snowflake-vsc-0.5.2.vsix \
+    code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/bastienboutonnet.vscode-dbt-0.5.1.vsix
 
 ENTRYPOINT [ "/entrypoint.sh" ]
