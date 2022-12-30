@@ -9,6 +9,6 @@ cp /var/tmp/.bashrc /home/jovyan/.bashrc
 chown jovyan:users -R /home/jovyan/.snowsql
 chown jovyan:users -R /home/jovyan/.vscode
 chown jovyan:users -R /home/jovyan/.bashrc
-chown jovyan:users -R /home/jovyan/.ssh
 chmod -R 0660 /home/jovyan/.ssh
+chown jovyan:users -R /home/jovyan/.ssh
 start-notebook.sh
