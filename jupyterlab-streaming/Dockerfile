@@ -1,6 +1,8 @@
 FROM gcr.io/getindata-images-public/jupyterlab-base:ubuntu-20.04.python-3.8
+ARG VSCODE_VERSION=4.9.1
+ARG VSCODE_PYTHON=2022.13.12141005
 ARG STREAMING_CLI_VERSION=1.6.0
-ARG MAGIC_VERSION=0.8.0
+ARG MAGIC_VERSION=0.12.1
 ENV TZ=Etc/UTC
 ENV MAVEN_CLI_OPTS="--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
 ENV FLINK_HOME="/opt/conda/lib/python3.8/site-packages/pyflink"
@@ -20,8 +22,17 @@ COPY resources/jupyter /var/tmp/jupyter/
 RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
 
 RUN sudo apt update -y && \
-    sudo apt-get install -y git maven openjdk-11-jdk && \
+    sudo apt-get install -y git maven openjdk-11-jdk curl && \
     rm -rf /var/lib/apt/lists/*
+
+# code server
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} && \
+    rm -rf "${HOME}/.cache"
+RUN code-server --install-extension ms-python.python${VSCODE_PYTHON}
+COPY resources/vsc/settings.json /root/.local/share/code-server/Machine/
+COPY resources/vsc/.bashrc root/
+
+RUN chown jovyan:users -R /home/jovyan/.local
 
 USER jovyan
 RUN pip install --no-cache-dir \

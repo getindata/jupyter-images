@@ -64,6 +64,7 @@ image with additional setup:
 * [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
 * [streaming-jupyter-integrations](https://github.com/getindata/streaming-jupyter-integrations) Jupyter magics for interactively running _Flink SQL_ jobs
 * [streamingcli](https://github.com/getindata/streaming-cli) tool
+* local [code-server](https://github.com/coder/code-server) as IDE
 
 Compatibility:
 
