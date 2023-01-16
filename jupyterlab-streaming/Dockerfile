@@ -42,7 +42,9 @@ RUN pip install --no-cache-dir \
     jupyter-server-proxy
 RUN pip install --no-cache-dir streamingcli==${STREAMING_CLI_VERSION}
 RUN pip install --no-cache-dir jupyter-packaging==0.12.2 
-RUN pip install --no-cache-dir streaming-jupyter-integrations==${MAGIC_VERSION} && pip cache purge
+RUN pip install --no-cache-dir streaming-jupyter-integrations==${MAGIC_VERSION}
+RUN pip uninstall -y jupyter-core && pip install --no-cache-dir jupyter-core
+RUN pip cache purge
 
 RUN mkdir -p /var/tmp/flink-deps/
 COPY ./pom.xml /var/tmp/flink-deps/pom.xml
