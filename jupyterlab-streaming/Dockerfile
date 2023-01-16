@@ -21,6 +21,7 @@ COPY resources/logos/ /opt/logos/
 COPY resources/jupyter /var/tmp/jupyter/
 COPY resources/jupyter/jupyter_server_config.py /etc/jupyter/jupyter_server_config.py
 RUN cat /var/tmp/jupyter/jupyter_server_config_append.py >> /etc/jupyter/jupyter_server_config.py
+RUN cat /var/tmp/jupyter/jupyter_notebook_config_append.py >> /etc/jupyter/jupyter_notebook_config.py
 
 EXPOSE 8080
 
