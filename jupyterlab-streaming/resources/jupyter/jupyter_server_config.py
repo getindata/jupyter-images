@@ -8,13 +8,6 @@ c.ServerApp.port = 8888
 c.ServerApp.open_browser = False
 c.ServerApp.allow_root = True
 
-HOME_PATH = "/home/jupyter"
-c.ServerApp.token = ''
-c.ServerApp.password = ''
-# c.ServerApp.base_url = os.getenv('NB_PREFIX', '')
-# c.ServerApp.root_dir = HOME_PATH
-# c.ServerApp.notebook_dir = HOME_PATH
-
 
 def get_gooogle_instance_attribute(attribute_name):
     try:
