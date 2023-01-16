@@ -20,13 +20,13 @@ jobs:
         with:
           install: true
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.event.pull_request.head.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx
+      # - name: Cache Docker layers
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: /tmp/.buildx-cache
+      #     key: ${{ runner.os }}-buildx-${{ github.event.pull_request.head.sha }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-buildx
 
       - name: Docker meta
         id: meta
@@ -50,10 +50,10 @@ jobs:
           push: true
           tags: gcr.io/getindata-images-public/jupyterlab-dataops:${{ matrix.platform }}-${{ github.event.pull_request.head.sha }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+      #     cache-from: type=local,src=/tmp/.buildx-cache
+      #     cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      # - name: Move cache
+      #   run: |
+      #     rm -rf /tmp/.buildx-cache
+      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache
