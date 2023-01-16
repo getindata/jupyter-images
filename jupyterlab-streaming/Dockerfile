@@ -51,4 +51,4 @@ COPY ./pom.xml /var/tmp/flink-deps/pom.xml
 RUN mvn $MAVEN_CLI_OPTS -f /var/tmp/flink-deps/pom.xml dependency:copy-dependencies -DoutputDirectory=$PYFLINK_LIB_DIR && \
     rm -rf ~/.m2/repository && rm -rf /var/tmp/flink-deps
 
-EXPOSE 8080/tcp
+EXPOSE 8080
