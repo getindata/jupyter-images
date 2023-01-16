@@ -19,7 +19,10 @@ COPY resources/logos/ /opt/logos/
 
 # jupyter config
 COPY resources/jupyter /var/tmp/jupyter/
-RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
+COPY resources/jupyter/jupyter_server_config.py /etc/jupyter/jupyter_server_config.py
+RUN cat /var/tmp/jupyter/jupyter_server_config_append.py >> /etc/jupyter/jupyter_server_config.py
+
+EXPOSE 8080
 
 RUN sudo apt update -y && \
     sudo apt-get install -y git maven openjdk-11-jdk curl && \
@@ -50,5 +53,3 @@ RUN mkdir -p /var/tmp/flink-deps/
 COPY ./pom.xml /var/tmp/flink-deps/pom.xml
 RUN mvn $MAVEN_CLI_OPTS -f /var/tmp/flink-deps/pom.xml dependency:copy-dependencies -DoutputDirectory=$PYFLINK_LIB_DIR && \
     rm -rf ~/.m2/repository && rm -rf /var/tmp/flink-deps
-
-EXPOSE 8080
