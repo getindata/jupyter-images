@@ -1,11 +1,14 @@
 import shutil
 import os
+
+
 def _codeserver_command():
     full_path = shutil.which('code-server')
     if not full_path:
         raise FileNotFoundError('Can not find code-server in $PATH')
     working_dir = os.getenv("CODE_WORKINGDIR", None) or os.getenv("JUPYTER_SERVER_ROOT", ".")
     return [full_path, f'--port=7000',  "--extensions-dir", "/var/tmp/extension","--auth", "none", working_dir]
+
 
 c.ServerProxy.servers = {
     'flink_ui': {
