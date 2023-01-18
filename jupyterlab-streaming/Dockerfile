@@ -33,7 +33,7 @@ RUN apt update -y \
     && rm -rf /var/lib/apt/lists/*
 
 # code server
-RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} \
+RUN curl -fsSL https://github.com/coder/code-server/blob/v${VSCODE_VERSION}/install.sh | sh -s -- --version ${VSCODE_VERSION} \
     && rm -rf "${HOME}/.cache"
 
 USER jovyan
