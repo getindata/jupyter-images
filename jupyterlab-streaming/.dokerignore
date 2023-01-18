@@ -1,0 +1,6 @@
+# whitelisting
+*
+
+!resources/*
+!requirements.txt
+!pom.xml
