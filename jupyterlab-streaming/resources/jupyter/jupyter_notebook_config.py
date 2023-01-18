@@ -10,18 +10,17 @@ c.ServerApp.port = 8888
 c.ServerApp.open_browser = False
 c.ServerApp.allow_root = True
 
-# HOME_PATH = "/home/jupyter"
+HOME_PATH = "/home/jupyter"     # user used by Vertex AI
 c.NotebookApp.open_browser = False
 c.ServerApp.token = ''
 c.ServerApp.password = ''
 c.ServerApp.base_url = os.getenv('NB_PREFIX', '')
-# c.ServerApp.root_dir = HOME_PATH
-# c.ServerApp.notebook_dir = HOME_PATH
+c.ServerApp.root_dir = HOME_PATH
+c.ServerApp.notebook_dir = HOME_PATH
 
 # https://github.com/jupyter/notebook/issues/3130
 c.FileContentsManager.delete_to_trash = False
-
-# c.FileCheckpoints.checkpoint_dir = f'{HOME_PATH}/checkpoints'
+c.FileCheckpoints.checkpoint_dir = f'{HOME_PATH}/checkpoints'
 
 
 def _get_gooogle_instance_attribute(attribute_name):
@@ -32,8 +31,16 @@ def _get_gooogle_instance_attribute(attribute_name):
         if response.status_code == 200:
             return response.text
         return None
-    except:
+    except _:
         return None
+
+
+def _codeserver_command():
+    full_path = shutil.which('code-server')
+    if not full_path:
+        raise FileNotFoundError('Can not find code-server in $PATH')
+    working_dir = os.getenv("CODE_WORKINGDIR", None) or os.getenv("JUPYTER_SERVER_ROOT", ".")
+    return [full_path, f'--port=7000', "--auth", "none", working_dir]
 
 
 try:
@@ -57,15 +64,6 @@ c.FileContentsManager.delete_to_trash = False
 # the environment
 if "NB_UMASK" in os.environ:
     os.umask(int(os.environ["NB_UMASK"], 8))
-
-
-def _codeserver_command():
-    full_path = shutil.which('code-server')
-    if not full_path:
-        raise FileNotFoundError('Can not find code-server in $PATH')
-    working_dir = os.getenv("CODE_WORKINGDIR", None) or os.getenv("JUPYTER_SERVER_ROOT", ".")
-    return [full_path, f'--port=7000', "--auth", "none", working_dir]
-
 
 c.ServerProxy.servers = {
     'flink_ui': {
