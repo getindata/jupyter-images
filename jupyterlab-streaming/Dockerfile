@@ -17,15 +17,11 @@ ENV NOTEBOOK_ARGS='--allow-root --ip 0.0.0.0 --config=/etc/jupyter/jupyter_noteb
 COPY resources/jupyter/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 COPY resources/logos/ /opt/logos/
 
+# jupyter home path
+RUN mkdir /home/jovyan/jupyter
+
 # for Vertex AI
 EXPOSE 8080
-
-COPY requirements.txt .
-RUN pip install pip --upgrade \
-  && pip install --no-cache -r requirements.txt \
-  && pip cache purge \
-  && rm requirements.txt
-RUN mkdir /home/jovyan/jupyter
 
 USER root
 
@@ -45,3 +41,9 @@ COPY resources/vsc/settings.json /root/.local/share/code-server/Machine/
 COPY resources/vsc/.bashrc root/
 
 COPY --from=MAVEN_BUILD /var/tmp/flink-deps/ $PYFLINK_LIB_DIR
+
+COPY requirements.txt .
+RUN pip install pip --upgrade \
+  && pip install --no-cache -r requirements.txt \
+  && pip cache purge \
+  && rm requirements.txt
