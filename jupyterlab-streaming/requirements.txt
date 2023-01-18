@@ -1,7 +1,7 @@
 jupyter-server-proxy
 jupyterlab-lsp
 jupyterlab-git
-streamingcli==1.6.0
+streamingcli==1.7.0
 jupyter-packaging==0.12.2
 streaming-jupyter-integrations==0.13.0
 apache-flink==1.16.0
