@@ -14,8 +14,6 @@ ARG PYFLINK_LIB_DIR="/opt/conda/lib/python3.8/site-packages/pyflink/lib/"
 
 ENV DOCKER_STACKS_JUPYTER_CMD=lab
 ENV NOTEBOOK_ARGS='--allow-root --ip 0.0.0.0 --config=/etc/jupyter/jupyter_notebook_config.py'
-COPY resources/jupyter/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
-COPY resources/logos/ /opt/logos/
 
 # jupyter home path
 RUN mkdir /home/jovyan/jupyter
@@ -47,3 +45,5 @@ RUN pip install pip --upgrade \
   && rm requirements.txt
 
 COPY --from=MAVEN_BUILD /var/tmp/flink-deps/ $PYFLINK_LIB_DIR
+COPY resources/jupyter/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
+COPY resources/logos/ /opt/logos/
