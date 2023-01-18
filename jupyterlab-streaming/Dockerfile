@@ -40,10 +40,10 @@ RUN code-server --install-extension ms-python.python${VSCODE_PYTHON}
 COPY resources/vsc/settings.json /root/.local/share/code-server/Machine/
 COPY resources/vsc/.bashrc root/
 
-COPY --from=MAVEN_BUILD /var/tmp/flink-deps/ $PYFLINK_LIB_DIR
-
 COPY requirements.txt .
 RUN pip install pip --upgrade \
   && pip install --no-cache -r requirements.txt \
   && pip cache purge \
   && rm requirements.txt
+
+COPY --from=MAVEN_BUILD /var/tmp/flink-deps/ $PYFLINK_LIB_DIR
