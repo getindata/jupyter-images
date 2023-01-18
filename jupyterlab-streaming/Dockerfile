@@ -23,7 +23,9 @@ EXPOSE 8080
 COPY requirements.txt .
 RUN pip install pip --upgrade \
   && pip install --no-cache -r requirements.txt \
-  && pip cache purge
+  && pip cache purge \
+  && rm requirements.txt
+RUN mkdir /home/jovyan/jupyter
 
 USER root
 

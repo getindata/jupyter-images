@@ -10,7 +10,7 @@ c.ServerApp.port = 8888
 c.ServerApp.open_browser = False
 c.ServerApp.allow_root = True
 
-HOME_PATH = "/home/jupyter"     # user used by Vertex AI
+HOME_PATH = "/home/jovyan/jupyter"
 c.NotebookApp.open_browser = False
 c.ServerApp.token = ''
 c.ServerApp.password = ''
