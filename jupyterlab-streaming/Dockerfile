@@ -24,7 +24,7 @@ EXPOSE 8080
 USER root
 
 RUN apt update -y \
-    && apt-get install -y git openjdk-11-jdk curl \
+    && apt-get install -y git openjdk-11-jdk curl vim \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
