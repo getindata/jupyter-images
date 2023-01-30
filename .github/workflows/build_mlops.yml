@@ -71,7 +71,7 @@ jobs:
           echo "::set-output name=IMAGE_VERSION::$IMAGE_VERSION"
 
       - name: Build jupyterlab-mlops
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v2
         with:
           context: jupyterlab-mlops
           builder: ${{ steps.buildx.outputs.name }}

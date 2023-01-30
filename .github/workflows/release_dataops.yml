@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.PUBLIC_GCR_DEPLOY_SA_KEY }}
 
       - name: Build ${{ steps.tag-info.outputs.IMAGE_NAME }}
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v2
         with:
           context: ${{ steps.tag-info.outputs.IMAGE_NAME }}
           builder: ${{ steps.buildx.outputs.name }}
