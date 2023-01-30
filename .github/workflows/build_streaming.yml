@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'jupyterlab-streaming/**'
+      - '.github/workflows/build_streaming.yml'
 
 jobs:
   buildx-streaming:
