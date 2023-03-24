@@ -72,6 +72,8 @@ RUN chmod +x /entrypoint.sh
 COPY resources/logos/ /opt/logos/
 # copy snowsql config jupyter config, addons and settings.json for code server
 COPY resources/snowsql/config resources/jupyter/ resources/vsc/addons/ resources/vsc/jupyterhub/settings.json resources/vsc/.bashrc  /var/tmp/
+# add QuickStart for MDP Workshop
+COPY quickstart.py $HOME/quickstart.py
 # add additional config
 RUN cat /var/tmp/jupyterhub/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
 # download snowsql binaries
