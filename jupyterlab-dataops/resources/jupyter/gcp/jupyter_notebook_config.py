@@ -32,22 +32,6 @@ c.ServerProxy.servers['vscode'] = {
         'icon_path': '/opt/logos/vs-code.svg',
     }
 }
-
-c.ServerProxy.servers['cloudbeaver'] = {
-    'command': ['/bin/bash', '-c', 'cd /opt/cloudbeaver && sudo ./run-server.sh', '{port}'],
-    'port': 8978,
-    'absolute_url': True,
-    'timeout': 30,
-    'new_browser_tab': False,
-    'launcher_entry': {
-        'title': "CloudBeaver",
-        'icon_path': '/opt/logos/cloudbeaver.svg',
-    },
-    "request_headers_override": {
-        "X-User": "cbadmin",
-        "X-Role": "user|admin"
-    }
-}
 c.ServerProxy.servers['dbt_docs'] = {
     'command': ['echo'],
     'port': 9328,

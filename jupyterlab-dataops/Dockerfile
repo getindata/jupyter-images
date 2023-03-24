@@ -28,10 +28,6 @@ RUN code-server --install-extension ms-python.python${VSCODE_PYTHON} \
 COPY resources/vsc/settings.json /root/.local/share/code-server/Machine/
 COPY resources/vsc/.bashrc root/
 
-# cloudbeaver
-COPY --from=gcr.io/getindata-images-public/cloudbeaver-dataops:0.1.0 /opt/cloudbeaver/ /opt/cloudbeaver/
-COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
-
 # requirements
 COPY requirements/requirements.txt /opt/requirements/
 RUN pip install -r /opt/requirements/requirements.txt
@@ -48,11 +44,6 @@ EXPOSE 8080
 FROM base as gcp
 COPY requirements/requirements-bigquery.txt /opt/requirements/
 RUN pip install -r /opt/requirements/requirements-bigquery.txt
-ADD resources/cloudbeaver/conf/initial-data-sources-bigquery.conf.j2 /opt/cloudbeaver/conf/initial-data-sources.conf.j2
-COPY resources/cloudbeaver/set_metadata.py /opt/cloudbeaver/set_metadata.py
-COPY resources/cloudbeaver/set_metadata_run_jupyter.sh /set_metadata_run_jupyter.sh
-RUN chmod +x /set_metadata_run_jupyter.sh
-CMD ["/set_metadata_run_jupyter.sh"]
 
 # Jupyterhub version
 FROM jupyter/minimal-notebook:python-3.8.13 as jupyterhub
