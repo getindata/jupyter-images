@@ -11,6 +11,9 @@ ARG VSCODE_PYTHON
 ARG VSCODE_DBT_POWER_USER
 ARG VSCODE_DBT
 
+RUN wget https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+    && apt-key add apt-key.gpg
+
 RUN apt-get update \
     && apt-get install -yq --no-install-recommends \
     curl \
