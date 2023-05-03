@@ -4,15 +4,12 @@ ARG VSCODE_DBT_POWER_USER=0.6.2
 ARG VSCODE_DBT=1.4
 ARG DP_CLI_VERSION=0.24.2
 
-FROM gcr.io/deeplearning-platform-release/base-cpu:m88 as base
+FROM gcr.io/deeplearning-platform-release/base-cpu:m108 as base
 
 ARG VSCODE_VERSION
 ARG VSCODE_PYTHON
 ARG VSCODE_DBT_POWER_USER
 ARG VSCODE_DBT
-
-RUN wget https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-    && apt-key add apt-key.gpg
 
 RUN apt-get update \
     && apt-get install -yq --no-install-recommends \
