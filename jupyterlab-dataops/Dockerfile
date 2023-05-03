@@ -55,7 +55,7 @@ RUN chmod +x /set_metadata_run_jupyter.sh
 CMD ["/set_metadata_run_jupyter.sh"]
 
 # Jupyterhub version
-FROM jupyter/minimal-notebook:python-3.8.13 as jupyterhub
+FROM jupyter/minimal-notebook:python-3.10.10 as jupyterhub
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
