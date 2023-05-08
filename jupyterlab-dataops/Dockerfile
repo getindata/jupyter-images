@@ -1,5 +1,5 @@
 ARG VSCODE_VERSION=4.9.1
-ARG VSCODE_PYTHON=2023.6.1
+ARG VSCODE_PYTHON=2023.9.11251005
 ARG VSCODE_DBT_POWER_USER=0.6.2
 ARG VSCODE_DBT=1.4
 ARG DP_CLI_VERSION=0.24.2
@@ -34,7 +34,6 @@ COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
 
 # requirements
 COPY requirements/requirements.txt /opt/requirements/
-RUN python -V
 RUN pip install -r /opt/requirements/requirements.txt
 
 # logos
