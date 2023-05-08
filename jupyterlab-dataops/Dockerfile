@@ -34,6 +34,7 @@ COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
 
 # requirements
 COPY requirements/requirements.txt /opt/requirements/
+RUN python -V
 RUN pip install -r /opt/requirements/requirements.txt
 
 # logos
