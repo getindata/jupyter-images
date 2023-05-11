@@ -1,10 +1,10 @@
 ARG VSCODE_VERSION=4.9.1
-ARG VSCODE_PYTHON=2022.13.12141005
+ARG VSCODE_PYTHON=2023.9.11251005
 ARG VSCODE_DBT_POWER_USER=0.6.2
-ARG VSCODE_DBT=0.5.1
-ARG DP_CLI_VERSION=0.24.0
+ARG VSCODE_DBT=1.4
+ARG DP_CLI_VERSION=0.24.2
 
-FROM gcr.io/deeplearning-platform-release/base-cpu:m88 as base
+FROM gcr.io/deeplearning-platform-release/base-cpu.py310:m108 as base
 
 ARG VSCODE_VERSION
 ARG VSCODE_PYTHON
@@ -55,7 +55,7 @@ RUN chmod +x /set_metadata_run_jupyter.sh
 CMD ["/set_metadata_run_jupyter.sh"]
 
 # Jupyterhub version
-FROM jupyter/minimal-notebook:python-3.8.13 as jupyterhub
+FROM jupyter/minimal-notebook:python-3.9.13 as jupyterhub
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
