@@ -46,7 +46,6 @@ image with additional setup:
 * [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
 * local [code-server](https://github.com/coder/code-server) as IDE accessed from the browser with
 [dbt Power User](https://marketplace.visualstudio.com/items?itemName=innoverio.vscode-dbt-power-user) extension pre-installed
-* local [CloudBeaver](https://github.com/dbeaver/cloudbeaver) as SQL editor accessed from the browser
 * [dbt](https://docs.getdbt.com/) CLI
 
 Compatibility:
