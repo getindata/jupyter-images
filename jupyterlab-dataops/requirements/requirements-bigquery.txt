@@ -1,2 +1,2 @@
-google-cloud-bigquery[bqstorage,pandas]==2.32.0
-google-cloud-compute==1.5.1
+google-cloud-bigquery[bqstorage,pandas]==3.11.3
+google-cloud-compute==1.11.0

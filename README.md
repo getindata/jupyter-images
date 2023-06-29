@@ -1,6 +1,6 @@
 # Jupyter Images 
 
-This repository stores receipes of publicly-available Jupyter images
+This repository stores recipes of publicly-available Jupyter images
 
 Latest versions:
 
