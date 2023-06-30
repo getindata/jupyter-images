@@ -44,8 +44,6 @@ EXPOSE 8080
 FROM base as gcp
 COPY requirements/requirements-bigquery.txt /opt/requirements/
 RUN pip install -r /opt/requirements/requirements-bigquery.txt
-RUN chmod +x /set_metadata_run_jupyter.sh
-CMD ["/set_metadata_run_jupyter.sh"]
 
 # Jupyterhub version
 FROM jupyter/minimal-notebook:python-3.9.13 as jupyterhub
