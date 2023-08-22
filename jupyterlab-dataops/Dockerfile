@@ -64,6 +64,19 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN chown -R jovyan:users $HOME
+USER jovyan
+# install python packages
+RUN pip install --no-cache-dir \
+    jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
+    jupyterlab-git \
+    jupyterlab-lsp \
+    jupyter-server-proxy \
+    data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
+    sqlfluff==1.4.5
+
+
+FROM jupyterhub as snowflake
 # Copies your code file  repository to the filesystem
 COPY resources/snowsql/entrypoint.sh /entrypoint.sh
 # change permission to execute the script and
@@ -82,14 +95,16 @@ RUN SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=/etc/bash.bashrc bash /usr/bin
 
 RUN chown -R jovyan:users $HOME
 USER jovyan
-# install python packages
-RUN pip install --no-cache-dir \
-    jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
-    jupyterlab-git \
-    jupyterlab-lsp \
-    jupyter-server-proxy \
-    data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
-    sqlfluff==1.4.5
+#RUN chown -R jovyan:users $HOME
+#USER jovyan
+## install python packages
+#RUN pip install --no-cache-dir \
+#    jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
+#    jupyterlab-git \
+#    jupyterlab-lsp \
+#    jupyter-server-proxy \
+#    data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
+#    sqlfluff==1.4.5
 
 # install code server and addons
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION}
