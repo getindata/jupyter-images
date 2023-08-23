@@ -44,6 +44,7 @@ EXPOSE 8080
 FROM base as gcp
 COPY requirements/requirements-bigquery.txt /opt/requirements/
 RUN pip install -r /opt/requirements/requirements-bigquery.txt
+# NOTE: gcp image is currently not built due to discontinued support for custom images in Vertex AI
 
 # Jupyterhub version
 FROM jupyter/minimal-notebook:python-3.9.13 as jupyterhub
@@ -73,7 +74,7 @@ RUN pip install --no-cache-dir \
     jupyterlab-lsp \
     jupyter-server-proxy \
     data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
-    sqlfluff==1.4.5
+    sqlfluff==2.3.0
 
 
 FROM jupyterhub as snowflake
