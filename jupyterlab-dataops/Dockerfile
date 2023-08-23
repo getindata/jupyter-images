@@ -78,6 +78,7 @@ RUN pip install --no-cache-dir \
 
 
 FROM jupyterhub as snowflake
+USER root
 # Copies your code file  repository to the filesystem
 COPY resources/snowsql/entrypoint.sh /entrypoint.sh
 # change permission to execute the script and
