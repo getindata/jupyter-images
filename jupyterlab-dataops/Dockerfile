@@ -1,8 +1,8 @@
-ARG VSCODE_VERSION=4.9.1
-ARG VSCODE_PYTHON=2023.9.11251005
-ARG VSCODE_DBT_POWER_USER=0.6.2
+ARG VSCODE_VERSION=4.14.1
+ARG VSCODE_PYTHON=2023.10.1
+ARG VSCODE_DBT_POWER_USER=0.13.0
 ARG VSCODE_DBT=1.4
-ARG DP_CLI_VERSION=0.24.2
+ARG DP_CLI_VERSION=0.26.0
 
 FROM gcr.io/deeplearning-platform-release/base-cpu.py310:m108 as base
 
@@ -28,10 +28,6 @@ RUN code-server --install-extension ms-python.python${VSCODE_PYTHON} \
 COPY resources/vsc/settings.json /root/.local/share/code-server/Machine/
 COPY resources/vsc/.bashrc root/
 
-# cloudbeaver
-COPY --from=gcr.io/getindata-images-public/cloudbeaver-dataops:0.1.0 /opt/cloudbeaver/ /opt/cloudbeaver/
-COPY resources/cloudbeaver/conf /opt/cloudbeaver/conf
-
 # requirements
 COPY requirements/requirements.txt /opt/requirements/
 RUN pip install -r /opt/requirements/requirements.txt
@@ -48,14 +44,10 @@ EXPOSE 8080
 FROM base as gcp
 COPY requirements/requirements-bigquery.txt /opt/requirements/
 RUN pip install -r /opt/requirements/requirements-bigquery.txt
-ADD resources/cloudbeaver/conf/initial-data-sources-bigquery.conf.j2 /opt/cloudbeaver/conf/initial-data-sources.conf.j2
-COPY resources/cloudbeaver/set_metadata.py /opt/cloudbeaver/set_metadata.py
-COPY resources/cloudbeaver/set_metadata_run_jupyter.sh /set_metadata_run_jupyter.sh
-RUN chmod +x /set_metadata_run_jupyter.sh
-CMD ["/set_metadata_run_jupyter.sh"]
+# NOTE: gcp image is currently not built due to discontinued support for custom images in Vertex AI
 
 # Jupyterhub version
-FROM jupyter/minimal-notebook:python-3.9.13 as jupyterhub
+FROM jupyter/minimal-notebook:python-3.11.4 as jupyterhub-base
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
@@ -73,6 +65,22 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN chown -R jovyan:users $HOME
+USER jovyan
+# install python packages
+RUN pip install --no-cache-dir \
+    jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
+    jupyterlab-git
+
+
+FROM jupyterhub-base as snowflake
+USER jovyan
+RUN pip install --no-cache-dir \
+    jupyter-server-proxy \
+    data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
+    sqlfluff==2.3.0
+
+USER root
 # Copies your code file  repository to the filesystem
 COPY resources/snowsql/entrypoint.sh /entrypoint.sh
 # change permission to execute the script and
@@ -91,14 +99,6 @@ RUN SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=/etc/bash.bashrc bash /usr/bin
 
 RUN chown -R jovyan:users $HOME
 USER jovyan
-# install python packages
-RUN pip install --no-cache-dir \
-    jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
-    jupyterlab-git \
-    jupyterlab-lsp \
-    jupyter-server-proxy \
-    data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
-    sqlfluff==1.4.5
 
 # install code server and addons
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION}
