@@ -38,20 +38,22 @@ Compatibility:
 
 ## jupyterlab-dataops
 
-Based on the [jupyter/base-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-base-notebook)
+Based on the [jupyter/minimal-notebook:python-3.11.4](https://hub.docker.com/layers/jupyter/minimal-notebook/python-3.11.4/images/sha256-1924d8d0adf9cf3646bf7fa3833a30e47d2b0a17a2b583556b37f015f208f115?context=explore)
 image with additional setup:
 
-* conda-backed python 3.8.8 environment
-* [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
-* [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
-* local [code-server](https://github.com/coder/code-server) as IDE accessed from the browser with
-[dbt Power User](https://marketplace.visualstudio.com/items?itemName=innoverio.vscode-dbt-power-user) extension pre-installed
-* [dbt](https://docs.getdbt.com/) CLI
+- **jupyterhub-base** image
+  - [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
+- **snowflake** image 
+  - [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
+  - [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
+  - local [code-server](https://github.com/coder/code-server) as IDE accessed from the browser with
+  - [dbt Power User](https://marketplace.visualstudio.com/items?itemName=innoverio.vscode-dbt-power-user) extension pre-installed
+  - [data-pipelines-cli](https://github.com/getindata/data-pipelines-cli) 
+  - [Snow SQL plugin](https://docs.snowflake.com/en/user-guide/snowsql)
 
 Compatibility:
 
 - [x] [JupyterHub](https://jupyter.org/hub)
-- [x] [Vertex AI Notebooks](https://cloud.google.com/vertex-ai/docs/general/notebooks)
 
 ## jupyterlab-streaming
 
