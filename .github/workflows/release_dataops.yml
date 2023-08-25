@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [jupyterhub, snowflake]
+        platform: [jupyterhub-base, snowflake]
     steps:
       - name: Checkout
         uses: actions/checkout@v2

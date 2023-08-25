@@ -2,7 +2,7 @@ ARG VSCODE_VERSION=4.14.1
 ARG VSCODE_PYTHON=2023.10.1
 ARG VSCODE_DBT_POWER_USER=0.13.0
 ARG VSCODE_DBT=1.4
-ARG DP_CLI_VERSION=0.25.2
+ARG DP_CLI_VERSION=0.26.0
 
 FROM gcr.io/deeplearning-platform-release/base-cpu.py310:m108 as base
 
@@ -47,7 +47,7 @@ RUN pip install -r /opt/requirements/requirements-bigquery.txt
 # NOTE: gcp image is currently not built due to discontinued support for custom images in Vertex AI
 
 # Jupyterhub version
-FROM jupyter/minimal-notebook:python-3.9.13 as jupyterhub
+FROM jupyter/minimal-notebook:python-3.11.4 as jupyterhub-base
 
 ARG VSCODE_VERSION
 ARG DP_CLI_VERSION
@@ -71,13 +71,16 @@ USER jovyan
 RUN pip install --no-cache-dir \
     jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
     jupyterlab-git \
-    jupyterlab-lsp \
+    jupyterlab-lsp
+
+
+FROM jupyterhub-base as snowflake
+USER jovyan
+RUN pip install --no-cache-dir \
     jupyter-server-proxy \
     data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
     sqlfluff==2.3.0
 
-
-FROM jupyterhub as snowflake
 USER root
 # Copies your code file  repository to the filesystem
 COPY resources/snowsql/entrypoint.sh /entrypoint.sh
@@ -97,16 +100,6 @@ RUN SNOWSQL_DEST=/var/tmp/bin SNOWSQL_LOGIN_SHELL=/etc/bash.bashrc bash /usr/bin
 
 RUN chown -R jovyan:users $HOME
 USER jovyan
-#RUN chown -R jovyan:users $HOME
-#USER jovyan
-## install python packages
-#RUN pip install --no-cache-dir \
-#    jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
-#    jupyterlab-git \
-#    jupyterlab-lsp \
-#    jupyter-server-proxy \
-#    data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
-#    sqlfluff==1.4.5
 
 # install code server and addons
 RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION}
