@@ -70,8 +70,7 @@ USER jovyan
 # install python packages
 RUN pip install --no-cache-dir \
     jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
-    jupyterlab-git \
-    jupyterlab-lsp
+    jupyterlab-git
 
 
 FROM jupyterhub-base as snowflake
