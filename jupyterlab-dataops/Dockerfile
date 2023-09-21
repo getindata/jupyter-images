@@ -73,6 +73,34 @@ RUN pip install --no-cache-dir \
     jupyterlab-git
 
 
+FROM jupyterhub-base as bigquery-postgres
+USER root
+RUN apt-get update \
+    && apt-get install -yq --no-install-recommends \
+    apt-transport-https \
+    ca-certificates \
+    gnupg \
+    sudo
+
+RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+RUN apt-get update \
+    && apt-get install -yq --no-install-recommends \
+    google-cloud-cli \
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+USER jovyan
+# install python packages
+RUN pip install --no-cache-dir \
+    'google-cloud-bigquery[bqstorage,pandas]' \
+    ipywidgets \
+    psycopg2 \
+    ipython-sql
+
+
 FROM jupyterhub-base as snowflake
 USER jovyan
 RUN pip install --no-cache-dir \
