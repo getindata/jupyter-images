@@ -72,7 +72,7 @@ RUN pip install --no-cache-dir \
     jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
     jupyterlab-git
 
-
+# BIGQUERY-POSTGRES
 FROM jupyterhub-base as bigquery-postgres
 USER root
 RUN apt-get update \
@@ -100,9 +100,56 @@ RUN pip install --no-cache-dir \
     psycopg2 \
     ipython-sql
 
+# WORKSHOP-BIGQUERY
+FROM jupyterhub-base AS workshop-bigquery
+USER jovyan
+ARG VSCODE_VERSION
+ARG DP_CLI_VERSION
+RUN pip install --no-cache-dir \
+    jupyter-server-proxy \
+    data-pipelines-cli[docker,datahub,gcs,bigquery]==${DP_CLI_VERSION} \
+    sqlfluff==2.3.0
 
+USER root
+RUN apt-get update \
+    && apt-get install -yq --no-install-recommends \
+    apt-transport-https \
+    ca-certificates \
+    gnupg \
+    sudo
+
+RUN echo "deb https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+RUN apt-get update \
+    && apt-get install -yq --no-install-recommends \
+    google-cloud-cli \
+    libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY resources/logos/ /opt/logos/
+COPY resources/jupyter/ resources/vsc/addons/ resources/vsc/jupyterhub/settings.json resources/vsc/.bashrc  /var/tmp/
+RUN cat /var/tmp/jupyterhub/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py
+RUN chown -R jovyan:users $HOME
+
+USER jovyan
+# install python packages
+RUN pip install --no-cache-dir \
+    'google-cloud-bigquery[bqstorage,pandas]' \
+    ipywidgets \
+    psycopg2 \
+    ipython-sql
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION}
+RUN code-server --extensions-dir /var/tmp/extension --install-extension ms-python.python \
+    code-server --extensions-dir /var/tmp/extension --install-extension innoverio.vscode-dbt-power-user \
+    code-server --extensions-dir /var/tmp/extension --install-extension /var/tmp/bastienboutonnet.vscode-dbt-0.5.1.vsix
+
+# SNOWFLAKE
 FROM jupyterhub-base as snowflake
 USER jovyan
+ARG VSCODE_VERSION
+ARG DP_CLI_VERSION
 RUN pip install --no-cache-dir \
     jupyter-server-proxy \
     data-pipelines-cli[docker,datahub,s3,snowflake]==${DP_CLI_VERSION} \
