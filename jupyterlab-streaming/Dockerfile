@@ -67,11 +67,11 @@ RUN pip install --no-cache-dir \
     jupyterlab-lsp \
     jupyter-server-proxy 
 
-RUN pip install --no-cache-dir streamingcli==2.0.3
-RUN pip install --no-cache-dir jupyter-packaging==0.12.2 
-RUN pip install --no-cache-dir streaming-jupyter-integrations==0.14.0 && pip cache purge
-RUN pip install --no-cache-dir apache-flink==1.16.1
-RUN pip install typing-extensions --upgrade
+COPY requirements.txt .
+RUN pip install pip --upgrade \
+  && pip install --no-cache-dir -r requirements.txt \
+  && pip cache purge \
+  && rm requirements.txt
 
 COPY --from=MAVEN_BUILD /var/tmp/flink-deps/ $PYFLINK_LIB_DIR
 COPY resources/jupyter/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
