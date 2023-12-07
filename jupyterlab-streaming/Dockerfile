@@ -61,9 +61,15 @@ RUN code-server --install-extension ms-python.python${VSCODE_PYTHON}
 COPY resources/vsc/settings.json /root/.local/share/code-server/Machine/
 COPY resources/vsc/.bashrc root/
 
+RUN pip install --no-cache-dir \
+    jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
+    jupyterlab-git \
+    jupyterlab-lsp \
+    jupyter-server-proxy 
+
 COPY requirements.txt .
 RUN pip install pip --upgrade \
-  && pip install --no-cache -r requirements.txt \
+  && pip install --no-cache-dir -r requirements.txt \
   && pip cache purge \
   && rm requirements.txt
 

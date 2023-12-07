@@ -56,6 +56,30 @@
       <artifactId>flink-http-connector</artifactId>
       <version>${http-connector.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.getindata</groupId>
+      <artifactId>flink-ververica-catalog-proxy-1.16</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-avro</artifactId>
+      <version>${flink.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-avro-confluent-registry</artifactId>
+      <version>${flink.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.2</version>
+    </dependency>
   </dependencies>
 
   <build>
