@@ -1,65 +1,31 @@
-FROM maven:3.8.3-openjdk-11 AS MAVEN_BUILD
-ARG FLINK_DEPS_TMP=/var/tmp/flink-deps/
+FROM gcr.io/getindata-images-public/jupyterlab-base:ubuntu-20.04.python-3.8
 
-COPY pom.xml .
-RUN mkdir $FLINK_DEPS_TMP
-RUN mvn dependency:copy-dependencies -DoutputDirectory=$FLINK_DEPS_TMP
-
-########################################################################
-FROM jupyter/base-notebook:python-3.8
-
-ARG VSCODE_VERSION=4.9.1
-ARG VSCODE_PYTHON=2022.13.12141005
+ENV TZ=US/Arizona
+ENV MAVEN_CLI_OPTS="--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+ENV FLINK_HOME="/opt/conda/lib/python3.8/site-packages/pyflink"
 ARG PYFLINK_LIB_DIR="/opt/conda/lib/python3.8/site-packages/pyflink/lib/"
-ARG KUBECTL_VERSION=v1.26.1
-
-ENV DOCKER_STACKS_JUPYTER_CMD=lab
-ENV NOTEBOOK_ARGS='--allow-root --ip 0.0.0.0 --config=/etc/jupyter/jupyter_notebook_config.py'
-
-# jupyter home path
-RUN mkdir /home/jovyan/jupyter
-
-# for Vertex AI
-EXPOSE 8080
 
 USER root
 
-RUN apt update -y \
-    && apt-get install -y git openjdk-11-jdk curl vim \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
+    groupadd -g 1337 nbusers
+COPY flink.svg /opt/logos/
+COPY jupyter_server_config_append /var/tmp/jupyter/
+RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py && \
+    rm /var/tmp/jupyter/jupyter_server_config_append
+RUN sudo apt update -y && \
+    sudo apt-get install -y git maven openjdk-11-jdk vim curl wget && \
+    rm -rf /var/lib/apt/lists/*
 
-# GH Cli
-RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
-    | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-    && apt update \
-    && apt install gh -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# gcloud + kubectl
-RUN apt-get update \
-    && apt-get install -y apt-transport-https ca-certificates gnupg \
-    && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" \
-    | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
-    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-    | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
-    && apt-get update \
-    && apt-get install -y google-cloud-cli google-cloud-sdk-gke-gcloud-auth-plugin kubectl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# code server
-RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --version ${VSCODE_VERSION} \
-    && rm -rf "${HOME}/.cache"
+RUN mkdir /opt/kafka && \
+    chmod 777 /opt/kafka
 
 USER jovyan
 
-RUN code-server --install-extension ms-python.python${VSCODE_PYTHON}
-COPY resources/vsc/settings.json /root/.local/share/code-server/Machine/
-COPY resources/vsc/.bashrc root/
+RUN wget -O /opt/kafka/kafka.tgz https://archive.apache.org/dist/kafka/3.4.0/kafka_2.13-3.4.0.tgz && \
+    tar -xzf /opt/kafka/kafka.tgz -C /opt/kafka && \
+    rm /opt/kafka/kafka.tgz
 
 RUN pip install --no-cache-dir \
     jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
@@ -73,6 +39,8 @@ RUN pip install pip --upgrade \
   && pip cache purge \
   && rm requirements.txt
 
-COPY --from=MAVEN_BUILD /var/tmp/flink-deps/ $PYFLINK_LIB_DIR
-COPY resources/jupyter/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
-COPY resources/logos/ /opt/logos/
+
+RUN mkdir -p /var/tmp/flink-deps/
+COPY ./pom.xml /var/tmp/flink-deps/pom.xml
+RUN mvn $MAVEN_CLI_OPTS -f /var/tmp/flink-deps/pom.xml  dependency:copy-dependencies -DoutputDirectory=$PYFLINK_LIB_DIR && \
+    rm -rf ~/.m2/repository && rm -rf /var/tmp/flink-deps
