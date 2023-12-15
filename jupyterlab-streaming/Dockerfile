@@ -10,8 +10,8 @@ USER root
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
     groupadd -g 1337 nbusers
-COPY flink.svg /opt/logos/
-COPY jupyter_server_config_append /var/tmp/jupyter/
+COPY resources/logos/flink.svg /opt/logos/
+COPY resources/jupyter_server_config_append /var/tmp/jupyter/
 RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py && \
     rm /var/tmp/jupyter/jupyter_server_config_append
 RUN sudo apt update -y && \
