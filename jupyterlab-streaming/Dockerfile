@@ -1,4 +1,4 @@
-FROM gcr.io/getindata-images-public/jupyterlab-base:ubuntu-20.04.python-3.8
+FROM jupyter/base-notebook:python-3.8
 
 ENV TZ=US/Arizona
 ENV MAVEN_CLI_OPTS="--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
@@ -19,7 +19,8 @@ RUN sudo apt update -y && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /opt/kafka && \
-    chmod 777 /opt/kafka
+    chown jovyan:root /opt/kafka && \
+    chmod 770 /opt/kafka
 
 USER jovyan
 
