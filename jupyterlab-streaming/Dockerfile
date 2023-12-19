@@ -1,7 +1,6 @@
 FROM jupyter/base-notebook:python-3.8
 
 ENV TZ=US/Arizona
-ENV MAVEN_CLI_OPTS="--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
 ENV FLINK_HOME="/opt/conda/lib/python3.8/site-packages/pyflink"
 ARG PYFLINK_LIB_DIR="/opt/conda/lib/python3.8/site-packages/pyflink/lib/"
 
@@ -43,5 +42,5 @@ RUN pip install pip --upgrade \
 
 RUN mkdir -p /var/tmp/flink-deps/
 COPY ./pom.xml /var/tmp/flink-deps/pom.xml
-RUN mvn `$MAVEN_CLI_OPTS` -f /var/tmp/flink-deps/pom.xml  dependency:copy-dependencies -DoutputDirectory=`$PYFLINK_LIB_DIR` && \
+RUN mvn --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true -f /var/tmp/flink-deps/pom.xml  dependency:copy-dependencies -DoutputDirectory="$PYFLINK_LIB_DIR" && \
     rm -rf ~/.m2/repository && rm -rf /var/tmp/flink-deps
