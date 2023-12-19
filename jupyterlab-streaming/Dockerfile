@@ -7,7 +7,7 @@ ARG PYFLINK_LIB_DIR="/opt/conda/lib/python3.8/site-packages/pyflink/lib/"
 
 USER root
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/"$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
 RUN echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
     groupadd -g 1337 nbusers
 COPY resources/logos/flink.svg /opt/logos/
@@ -43,5 +43,5 @@ RUN pip install pip --upgrade \
 
 RUN mkdir -p /var/tmp/flink-deps/
 COPY ./pom.xml /var/tmp/flink-deps/pom.xml
-RUN mvn $MAVEN_CLI_OPTS -f /var/tmp/flink-deps/pom.xml  dependency:copy-dependencies -DoutputDirectory=$PYFLINK_LIB_DIR && \
+RUN mvn `$MAVEN_CLI_OPTS` -f /var/tmp/flink-deps/pom.xml  dependency:copy-dependencies -DoutputDirectory=`$PYFLINK_LIB_DIR` && \
     rm -rf ~/.m2/repository && rm -rf /var/tmp/flink-deps
