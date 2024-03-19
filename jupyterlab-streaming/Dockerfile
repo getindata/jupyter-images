@@ -35,12 +35,16 @@ RUN pip install --no-cache-dir \
 
 COPY requirements.txt .
 RUN pip install pip --upgrade \
-  && pip install --no-cache-dir -r requirements.txt \
-  && pip cache purge \
-  && rm requirements.txt
-
+    && pip install --no-cache-dir --default-timeout=180 -r requirements.txt \
+    && pip cache purge \
+    && rm requirements.txt
 
 RUN mkdir -p /var/tmp/flink-deps/
 COPY ./pom.xml /var/tmp/flink-deps/pom.xml
-RUN mvn --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true -f /var/tmp/flink-deps/pom.xml  dependency:copy-dependencies -DoutputDirectory="$PYFLINK_LIB_DIR" && \
-    rm -rf ~/.m2/repository && rm -rf /var/tmp/flink-deps
+RUN mvn --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true -f /var/tmp/flink-deps/pom.xml  dependency:copy-dependencies -DoutputDirectory="$PYFLINK_LIB_DIR"
+
+# flink dependencies for hive metastore
+COPY ./flink-hms-pom.xml /var/tmp/flink-deps/flink-hms-pom.xml
+RUN mvn --batch-mode --errors --fail-at-end --show-version -f /var/tmp/flink-deps/flink-hms-pom.xml dependency:copy-dependencies -DexcludeTransitive=true -DoutputDirectory="$PYFLINK_LIB_DIR"
+
+RUN rm -rf ~/.m2/repository && rm -rf /var/tmp/flink-deps
