@@ -48,12 +48,12 @@ RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
 # delete user jupyter,jovyan if exists
 RUN  if [ "$( id ${NB_USER} 2>/dev/null | wc -l)" -eq 1 ]; then userdel ${NB_USER}; fi; \
      if [ "$( id jovyan 2>/dev/null | wc -l)" -eq 1 ]; then userdel jovyan; fi; \
-     echo "add user ${NB_USER} if not exits"; \
-     if [ "$( id ${NB_USER} 2>/dev/null | wc -l)" -eq 0 ]; then \
-        useradd -ms /bin/bash -u ${NB_UID} ${NB_USER} -g ${NB_GID}; fi; \
      echo "add group GID if not exists (for Vertex)"; \
      if [ "$( grep ${NB_GID} /etc/group | wc -l)" -eq 0 ]; then \
         groupadd -g ${NB_GID} jupyter-group; fi; \
+     echo "add user ${NB_USER} if not exits"; \
+     if [ "$( id ${NB_USER} 2>/dev/null | wc -l)" -eq 0 ]; then \
+        useradd -ms /bin/bash -u ${NB_UID} ${NB_USER} -g ${NB_GID}; fi; \
      echo "allow passwordless sudo and add group required by kubeflow"; \
      echo "${NB_USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
      groupadd -g 1337 nbusers
