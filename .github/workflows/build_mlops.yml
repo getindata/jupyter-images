@@ -31,6 +31,7 @@ jobs:
             nb-user: jovyan
           - base-image: "jupyter/pyspark-notebook:lab-3.2.1"
             spark-support: true
+            kedro-version: 0.17.5
             vscode-version: 4.0.2
             python-version: 3.8
             tag-base: azure
@@ -39,6 +40,7 @@ jobs:
             nb-gid: "1004"
           - base-image: "gcr.io/deeplearning-platform-release/base-cpu:m92"
             spark-support: false
+            kedro-version: 0.17.5
             vscode-version: 4.0.2
             python-version: 3.8
             tag-base: vertex
