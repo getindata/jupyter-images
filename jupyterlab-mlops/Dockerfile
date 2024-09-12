@@ -29,8 +29,12 @@ RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
     apt update --fix-missing && \
     apt install -y zip patch && \
     mkdir -p /tmp/patches/org/apache/spark/ui/static/ && \
-    unzip -p /usr/local/spark/jars/spark-core_2.12-3.2.0.jar org/apache/spark/ui/static/stagepage.js > /tmp/patches/org/apache/spark/ui/static/stagepage.js && \
-    unzip -p /usr/local/spark/jars/spark-core_2.12-3.2.0.jar org/apache/spark/ui/static/utils.js > /tmp/patches/org/apache/spark/ui/static/utils.js && \
+    unzip -p /usr/local/spark/jars/spark-core_2.12-3.2.0.jar \
+        org/apache/spark/ui/static/stagepage.js \
+        > /tmp/patches/org/apache/spark/ui/static/stagepage.js && \
+    unzip -p /usr/local/spark/jars/spark-core_2.12-3.2.0.jar \
+        org/apache/spark/ui/static/utils.js \
+        > /tmp/patches/org/apache/spark/ui/static/utils.js && \
     patch /tmp/patches/org/apache/spark/ui/static/stagepage.js < /tmp/patches/stagepage.js.patch && \
     patch /tmp/patches/org/apache/spark/ui/static/utils.js < /tmp/patches/utils.js.patch && \
     pushd /tmp/patches && \
@@ -42,15 +46,15 @@ RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
     fi
 
 # delete user jupyter,jovyan if exists
-RUN  if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 1 ]; then userdel $NB_USER; fi; \
+RUN  if [ "$( id ${NB_USER} 2>/dev/null | wc -l)" -eq 1 ]; then userdel ${NB_USER}; fi; \
      if [ "$( id jovyan 2>/dev/null | wc -l)" -eq 1 ]; then userdel jovyan; fi; \
-     echo  add user $NB_USER if not exits; \
-     if [ "$( id $NB_USER 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/bash -u $NB_UID $NB_USER -g $NB_GID; fi; \
+     echo  add user ${NB_USER} if not exits; \
+     if [ "$( id ${NB_USER} 2>/dev/null | wc -l)" -eq 0 ]; then useradd -ms /bin/bash -u ${NB_UID} ${NB_USER} -g ${NB_GID}; fi; \
      echo "add group GID 1001 if not exists (for Vertex)"; \
      if [ "$( grep 1001 /etc/group | wc -l)" -eq 0 ]; then groupadd -g 1001 jupyter-group; fi; \
      echo "allow passwordless sudo and add group required by kubeflow"; \
-     echo "$NB_USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
-       groupadd -g 1337 nbusers
+     echo "${NB_USER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/notebook && \
+     groupadd -g 1337 nbusers
 
 #install mamba if not exists
 RUN if [ "$( which mamba | wc -l )" -eq 0 ]; then conda install mamba -n base -c conda-forge; fi
@@ -76,15 +80,17 @@ RUN if [ "$VSCODE_VERSION" != "NONE" ]; then \
       rm -rf code-server-${VSCODE_VERSION}-linux-amd64.tar.gz ; \
     fi
 
-RUN sudo usermod -a -G users $NB_USER; \
-    if [ $NB_USER != "jovyan" ]; then \
-    if [ -d /home/jovyan ]; then cp -r /home/jovyan /home/$NB_USER; fi; \
-    if [ -d /home/jovyan ]; then chown -R $NB_USER:$NB_GID /home/$NB_USER; fi; \
+RUN sudo usermod -a -G users ${NB_USER}; \
+    if [ ${NB_USER} != "jovyan" ]; then \
+        if [ -d /home/jovyan ]; then \
+            cp -r /home/jovyan /home/${NB_USER}; \
+            chown -R ${NB_USER}:${NB_GID} /home/${NB_USER}; \
+        fi; \
     fi
 
-USER $NB_USER
-WORKDIR /home/$NB_USER
-ENV HOME=/home/$NB_USER
+USER ${NB_USER}
+WORKDIR /home/${NB_USER}
+ENV HOME=/home/${NB_USER}
 # Adding user to group that owns /opt
 # That's partially because /home/jovyan is hardcoded in few parts of start scripts
 # To be sure, changing ownership of old home
@@ -110,18 +116,19 @@ RUN if [ "${KEDRO_VERSION}" != "NONE" ]; then \
     fi
 
 RUN fix-permissions "/home/${NB_USER}" && \
-    fix-permissions "${CONDA_DIR}"
-RUN if [ -d /opt/jupyter ]; then chown -R $NB_USER:$NB_GID /opt/jupyter; fi
-USER $NB_USER
+    fix-permissions "${CONDA_DIR}" && \
+    if [ -d /opt/jupyter ]; then chown -R ${NB_USER}:${NB_GID} /opt/jupyter; fi
+
+USER ${NB_USER}
 # above kernel installation makes sense in case of ephemeral KF notebooks (no home remounting)
 
 COPY jupyter_server_config.py jupyter_notebook_config.py /etc/jupyter/
 COPY kedro_icon_no-type_whitebg.svg /usr/local/share/kedro-logo.svg
 
 # conda init & activate populate PATH
-RUN conda config --set auto_activate_base false
-RUN conda init bash
-RUN echo "conda activate python${PYTHON_VERSION}" >> ~/.bashrc
+RUN conda config --set auto_activate_base false && \
+    conda init bash && \
+    echo "conda activate python${PYTHON_VERSION}" >> ~/.bashrc
 
 ENV MLFLOW_TRACKING_URI=http://localhost:5000
 ENV JUPYTER_ENABLE_LAB=yes
