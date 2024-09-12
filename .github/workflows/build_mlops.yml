@@ -37,7 +37,7 @@ jobs:
             nb-user: azureuser
             nb-uid: "1001"
             nb-gid: "1004"
-          - base-image: "gcr.io/deeplearning-platform-release/base-cpu:m88"
+          - base-image: "gcr.io/deeplearning-platform-release/base-cpu:m92"
             spark-support: false
             vscode-version: 4.0.2
             python-version: 3.8
