@@ -24,35 +24,35 @@ jobs:
         include:
           - base-image: "jupyter/pyspark-notebook:lab-3.2.1"
             spark-support: true
-            kedro-version: 0.17.5
-            mlflow-version: 1.23.1
-            vscode-version: 4.0.2
-            python-version: 3.8
+            kedro-version: "0.17.5"
+            mlflow-version: "1.23.1"
+            vscode-version: "4.0.2"
+            python-version: "3.8"
             tag-base: dev
             nb-user: jovyan
           - base-image: "jupyter/pyspark-notebook:lab-3.2.1"
             spark-support: true
-            kedro-version: 0.17.5
-            mlflow-version: 1.23.1
-            vscode-version: 4.0.2
-            python-version: 3.8
+            kedro-version: "0.17.5"
+            mlflow-version: "1.23.1"
+            vscode-version: "4.0.2"
+            python-version: "3.8"
             tag-base: azure
             nb-user: azureuser
             nb-uid: "1001"
             nb-gid: "1004"
           - base-image: "gcr.io/deeplearning-platform-release/base-cpu.py310:m124"
             spark-support: false
-            kedro-version: 0.19.8
-            mlflow-version: 2.15.1
-            vscode-version: 4.91.1
-            python-version: 3.10
+            kedro-version: "0.19.8"
+            mlflow-version: "2.15.1"
+            vscode-version: "4.91.1"
+            python-version: "3.10"
             tag-base: vertex
             nb-user: jupyter
           - base-image: "jupyter/minimal-notebook:python-3.11.6"
             spark-support: false
-            mlflow-version: 2.15.1
-            vscode-version: 4.91.1
-            python-version: 3.11
+            mlflow-version: "2.15.1"
+            vscode-version: "4.91.1"
+            python-version: "3.11"
             tag-base: python-3.11
             nb-user: jovyan
     steps:
