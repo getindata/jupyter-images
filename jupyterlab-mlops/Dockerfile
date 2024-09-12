@@ -46,8 +46,8 @@ RUN if [ "$SPARK_SUPPORT" = "true" ]; then \
     fi
 
 # delete user jupyter,jovyan if exists
-RUN  if [ "$( id ${NB_USER} 2>/dev/null | wc -l)" -eq 1 ]; then userdel ${NB_USER}; fi; \
-     if [ "$( id jovyan 2>/dev/null | wc -l)" -eq 1 ]; then userdel jovyan; fi; \
+RUN  if [ "$( id ${NB_USER} 2>/dev/null | wc -l)" -eq 1 ]; then userdel -r ${NB_USER}; fi; \
+     if [ "$( id jovyan 2>/dev/null | wc -l)" -eq 1 ]; then userdel -r jovyan; fi; \
      echo "add group GID if not exists (for Vertex)"; \
      if [ "$( grep ${NB_GID} /etc/group | wc -l)" -eq 0 ]; then \
         groupadd -g ${NB_GID} jupyter-group; fi; \
