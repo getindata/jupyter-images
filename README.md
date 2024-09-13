@@ -38,7 +38,7 @@ image with additional setup of:
 Based on the [jupyter/minimal-notebook:python-3.11](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook)
 image with additional setup of:
 
-* conda-backed python 3.11 environment
+* conda-backed python 3.11 environment with [kedro 0.19.8](https://docs.kedro.org/en/0.19.8/) framework
 * [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
 * [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
 * local [MLflow](https://mlflow.org/) server for experiment tracking
