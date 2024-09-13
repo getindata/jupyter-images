@@ -15,7 +15,8 @@ ENV NB_USER=$USER \
     NB_GID=$GID \
     CONDA_DIR=/opt/conda \
     VSCODE_VERSION=$VSCODE_VERSION \
-    KEDRO_VERSION=$KEDRO_VERSION
+    KEDRO_VERSION=$KEDRO_VERSION \
+    KEDRO_DISABLE_TELEMETRY=true
 
 USER root
 
@@ -106,16 +107,12 @@ RUN mamba install --quiet --yes kfp jupyter-server-proxy -c conda-forge && \
     pip --no-cache-dir install mlflow==$MLFLOW_VERSION && \
     mamba clean --all -f -y
 
-# configure python env with optional kedro
-RUN if [ "${KEDRO_VERSION}" != "NONE" ]; then \
-    mamba create --quiet --yes -p "${CONDA_DIR}/envs/python${PYTHON_VERSION}" python=${PYTHON_VERSION} ipython ipykernel kedro=${KEDRO_VERSION} && \
+# configure python env with kedro
+RUN mamba create --quiet --yes -p "${CONDA_DIR}/envs/python${PYTHON_VERSION}" \
+    python=${PYTHON_VERSION} ipython ipykernel kedro=${KEDRO_VERSION} kedro-viz && \
     mamba clean --all -f -y && \
-    "${CONDA_DIR}/envs/python${PYTHON_VERSION}/bin/python" -m ipykernel install --user --name=python${PYTHON_VERSION}; \
-    else \
-    mamba create --quiet --yes -p "${CONDA_DIR}/envs/python${PYTHON_VERSION}" python=${PYTHON_VERSION} ipython ipykernel && \
-    mamba clean --all -f -y && \
-    "${CONDA_DIR}/envs/python${PYTHON_VERSION}/bin/python" -m ipykernel install --user --name=python${PYTHON_VERSION}; \
-    fi
+    "${CONDA_DIR}/envs/python${PYTHON_VERSION}/bin/python" -m ipykernel \
+    install --user --name=python${PYTHON_VERSION}
 
 RUN fix-permissions "/home/${NB_USER}" && \
     fix-permissions "${CONDA_DIR}" && \

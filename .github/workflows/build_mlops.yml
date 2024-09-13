@@ -1,6 +1,6 @@
 name: Build jupyterlab-mlops Image
 env:
-  KEDRO_DEFAULT_VERSION: "NONE"
+  KEDRO_DEFAULT_VERSION: "0.19.8"
   MLFLOW_DEFAULT_VERSION: "2.15.1"
   VSCODE_DEFAULT_VERSION: "NONE"
   PYTHON_DEFAULT_VERSION: "3.11"
@@ -50,6 +50,7 @@ jobs:
             nb-user: jupyter
           - base-image: "jupyter/minimal-notebook:python-3.11.6"
             spark-support: false
+            kedro-version: "0.19.8"
             mlflow-version: "2.15.1"
             vscode-version: "4.91.1"
             python-version: "3.11"
