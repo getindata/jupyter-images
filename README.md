@@ -1,4 +1,4 @@
-# Jupyter Images 
+# Jupyter Images
 
 This repository stores recipes of publicly-available Jupyter images
 
@@ -10,7 +10,7 @@ gcr.io/getindata-images-public/jupyterlab-mlops:dev-0.2.9
 
 ## jupyterlab-base
 
-Local copy of [jupyter/base-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-base-notebook), 
+Local copy of [jupyter/base-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-base-notebook),
 used to build and manage local versions of `base-notebook` image that are no longer published in offical repositories:
 
 ### jupyterlab-base:ubuntu-20.04.python-3.8
@@ -19,6 +19,8 @@ used to build and manage local versions of `base-notebook` image that are no lon
 * Ubuntu 20.04 as base image
 
 ## jupyterlab-mlops
+
+### jupyterlab-mlops:dev
 
 Based on the [jupyter/pyspark-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-pyspark-notebook)
 image with additional setup of:
@@ -30,6 +32,19 @@ image with additional setup of:
 * Istio-compatible Spark executor entrypoint
 
 ![jupyterlab-mlops-launcher](docs/jupyterlab-mlops-launcher.png)
+
+### jupyterlab-mlops:python-3.11
+
+Based on the [jupyter/minimal-notebook:python-3.11](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-minimal-notebook)
+image with additional setup of:
+
+* conda-backed python 3.11 environment with [kedro 0.19.8](https://docs.kedro.org/en/0.19.8/) framework
+* [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
+* [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
+* local [MLflow](https://mlflow.org/) server for experiment tracking
+* local [code-server](https://github.com/coder/code-server) as IDE accessed from the browser
+
+![jupyterlab-mlops-launcher](docs/jupyterlab-mlops-launcher-3.11.png)
 
 Compatibility:
 
@@ -43,12 +58,12 @@ image with additional setup:
 
 - **jupyterhub-base** image
   - [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
-- **snowflake** image 
+- **snowflake** image
   - [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
   - [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
   - local [code-server](https://github.com/coder/code-server) as IDE accessed from the browser with
   - [dbt Power User](https://marketplace.visualstudio.com/items?itemName=innoverio.vscode-dbt-power-user) extension pre-installed
-  - [data-pipelines-cli](https://github.com/getindata/data-pipelines-cli) 
+  - [data-pipelines-cli](https://github.com/getindata/data-pipelines-cli)
   - [Snow SQL plugin](https://docs.snowflake.com/en/user-guide/snowsql)
 
 Compatibility:
