@@ -16,7 +16,7 @@ RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_se
 RUN sudo apt update -y && \
     sudo apt-get install -y git maven openjdk-11-jdk vim curl wget gcc && \
     rm -rf /var/lib/apt/lists/*
-ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-arm64
+RUN export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
 
 RUN mkdir /opt/kafka && \
     chown jovyan:root /opt/kafka && \
