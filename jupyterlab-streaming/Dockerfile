@@ -16,7 +16,16 @@ RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_se
 RUN sudo apt update -y && \
     sudo apt-get install -y git maven openjdk-11-jdk vim curl wget gcc && \
     rm -rf /var/lib/apt/lists/*
-RUN export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
+
+RUN if [ -d /usr/lib/jvm/java-11-openjdk-arm64 ]; then \
+      sudo ln -snf /usr/lib/jvm/java-11-openjdk-arm64 /usr/lib/jvm/default-java; \
+    elif [ -d /usr/lib/jvm/java-11-openjdk-amd64 ]; then \
+      sudo ln -snf /usr/lib/jvm/java-11-openjdk-amd64 /usr/lib/jvm/default-java; \
+    else \
+      sudo echo "No supported JDK directory found."; \
+    fi
+
+ENV JAVA_HOME=/usr/lib/jvm/default-java
 
 RUN mkdir /opt/kafka && \
     chown jovyan:root /opt/kafka && \
