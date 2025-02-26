@@ -14,8 +14,18 @@ COPY resources/jupyter_server_config_append /var/tmp/jupyter/
 RUN cat /var/tmp/jupyter/jupyter_server_config_append >> /etc/jupyter/jupyter_server_config.py && \
     rm /var/tmp/jupyter/jupyter_server_config_append
 RUN sudo apt update -y && \
-    sudo apt-get install -y git maven openjdk-11-jdk vim curl wget && \
+    sudo apt-get install -y git maven openjdk-11-jdk vim curl wget gcc && \
     rm -rf /var/lib/apt/lists/*
+
+RUN if [ -d /usr/lib/jvm/java-11-openjdk-arm64 ]; then \
+      sudo ln -snf /usr/lib/jvm/java-11-openjdk-arm64 /usr/lib/jvm/default-java; \
+    elif [ -d /usr/lib/jvm/java-11-openjdk-amd64 ]; then \
+      sudo ln -snf /usr/lib/jvm/java-11-openjdk-amd64 /usr/lib/jvm/default-java; \
+    else \
+      sudo echo "No supported JDK directory found."; \
+    fi
+
+ENV JAVA_HOME=/usr/lib/jvm/default-java
 
 RUN mkdir /opt/kafka && \
     chown jovyan:root /opt/kafka && \
@@ -28,7 +38,7 @@ RUN wget -O /opt/kafka/kafka.tgz https://archive.apache.org/dist/kafka/3.4.0/kaf
     rm /opt/kafka/kafka.tgz
 
 RUN pip install --no-cache-dir \
-    jupyterlab==$(conda list -f jupyterlab --json | grep -oP '(?<=\"version\": \")[^\"]*') \
+    jupyterlab==4.1.0 \
     jupyterlab-git \
     jupyterlab-lsp \
     jupyter-server-proxy 
