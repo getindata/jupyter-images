@@ -25,13 +25,18 @@ used to build and manage local versions of `base-notebook` image that are no lon
 Based on the [jupyter/pyspark-notebook](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-pyspark-notebook)
 image with additional setup of:
 
-* conda-backed python 3.9 environment
+* conda-backed python 3.11 environment with [kedro 0.19.8](https://docs.kedro.org/en/0.19.8/) framework
 * [jupyterlab-git](https://github.com/jupyterlab/jupyterlab-git) extension
+* [jupyter-server-proxy](https://jupyter-server-proxy.readthedocs.io) extension
 * local [MLflow](https://mlflow.org/) server for experiment tracking
-* additional conda environment with python 3.8 and [kedro](https://kedro.readthedocs.io/en/stable/) framework
-* Istio-compatible Spark executor entrypoint
+* local [code-server](https://github.com/coder/code-server) as IDE accessed from the browser
+* local [Spark 3.5.0](https://spark.apache.org/docs/3.5.0/) server for data analytics
 
-![jupyterlab-mlops-launcher](docs/jupyterlab-mlops-launcher.png)
+![jupyterlab-mlops-launcher](docs/jupyterlab-mlops-launcher-3.11.png)
+
+Compatibility:
+
+- [x] [JupyterHub](https://jupyter.org/hub)
 
 ### jupyterlab-mlops:python-3.11
 
@@ -49,7 +54,7 @@ image with additional setup of:
 Compatibility:
 
 - [x] [Kubeflow Notebook Servers](https://www.kubeflow.org/docs/components/notebooks/)
-- [x] [Vertex AI Notebooks](https://cloud.google.com/vertex-ai/docs/general/notebooks)
+- [x] [JupyterHub](https://jupyter.org/hub)
 
 ## jupyterlab-dataops
 

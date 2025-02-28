@@ -2,11 +2,11 @@ name: Build jupyterlab-mlops Image
 env:
   KEDRO_DEFAULT_VERSION: "0.19.8"
   MLFLOW_DEFAULT_VERSION: "2.15.1"
-  VSCODE_DEFAULT_VERSION: "NONE"
+  VSCODE_DEFAULT_VERSION: "4.91.1"
   PYTHON_DEFAULT_VERSION: "3.11"
   NB_DEFAULT_UID: "1000"
   NB_DEFAULT_GID: "100"
-  NB_DEFAULT_USER: "jupyter"
+  NB_DEFAULT_USER: "jovyan"
 on:
   pull_request:
     paths:
@@ -22,40 +22,15 @@ jobs:
     strategy:
       matrix:
         include:
-          - base-image: "jupyter/pyspark-notebook:lab-3.2.1"
-            spark-support: true
-            kedro-version: "0.17.5"
-            mlflow-version: "1.23.1"
-            vscode-version: "4.0.2"
-            python-version: "3.8"
+          - base-image: "jupyter/pyspark-notebook:lab-4.0.6"
             tag-base: dev
-            nb-user: jovyan
-          - base-image: "jupyter/pyspark-notebook:lab-3.2.1"
-            spark-support: true
-            kedro-version: "0.17.5"
-            mlflow-version: "1.23.1"
-            vscode-version: "4.0.2"
-            python-version: "3.8"
+          - base-image: "jupyter/pyspark-notebook:lab-4.0.6"
             tag-base: azure
             nb-user: azureuser
             nb-uid: "1001"
             nb-gid: "1004"
-          - base-image: "gcr.io/deeplearning-platform-release/base-cpu.py310:m124"
-            spark-support: false
-            kedro-version: "0.19.8"
-            mlflow-version: "2.15.1"
-            vscode-version: "4.91.1"
-            python-version: "3.10"
-            tag-base: vertex
-            nb-user: jupyter
           - base-image: "jupyter/minimal-notebook:python-3.11.6"
-            spark-support: false
-            kedro-version: "0.19.8"
-            mlflow-version: "2.15.1"
-            vscode-version: "4.91.1"
-            python-version: "3.11"
             tag-base: python-3.11
-            nb-user: jovyan
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -99,7 +74,6 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache-new
           build-args: |
             BASE_IMAGE=${{ matrix.base-image }}
-            SPARK_SUPPORT=${{ matrix.spark-support }}
             KEDRO_VERSION=${{ matrix.kedro-version  || env.KEDRO_DEFAULT_VERSION }}
             MLFLOW_VERSION=${{ matrix.mlflow-version || env.MLFLOW_DEFAULT_VERSION }}
             VSCODE_VERSION=${{ matrix.vscode-version || env.VSCODE_DEFAULT_VERSION }}
